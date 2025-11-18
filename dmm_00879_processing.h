@@ -13,13 +13,13 @@
 #define MAIN_H
 
 // Variables used my other modules
-uint8_t sampling_completed;             // Background.c
-int64_t sampled_value;                  // Background.c
-uint8_t measurement_mode;               // Background.c
-uint8_t Events;                         // Background.c
-uint8_t key_debounce;                   // Background.c
-uint64_t active_voltage_offset;         // Background.c
-uint64_t active_current_offset;         // Background.c
+uint8_t sampling_completed;     // Background.c
+int64_t sampled_value;          // Background.c
+uint8_t measurement_mode;       // Background.c
+uint8_t Events;                 // Background.c
+uint8_t key_debounce;           // Background.c
+uint64_t active_voltage_offset; // Background.c
+uint64_t active_current_offset; // Background.c
 
 // Module Prototypes
 void Main(void);
