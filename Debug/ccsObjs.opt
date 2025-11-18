@@ -1,0 +1,7 @@
+"./dmm_00879_hw_setup.obj"
+"./dmm_00879_main.obj"
+"./dmm_00879_processing.obj"
+"./hal_pmm.obj"
+"../lnk_msp430f6736.cmd"
+-llibmath.a
+-llibc.a
