@@ -1,7 +1,6 @@
-//--------------------------------------------------------------------------
-//
-//  DMM - Defines Module
-/*
+/*==============================================================================
+  DMM - Defines Module+
+  
  * Copyright (c) 2016, Texas Instruments Incorporated
  * All rights reserved.
  *
@@ -31,11 +30,12 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-//--------------------------------------------------------------------------
+==============================================================================*/
 
 #ifndef __DMM_00879_DEFINES_H
 #define __DMM_00879_DEFINES_H
+
+//==============================================================================
 
 #define AVERAGING_SAMPLES 4096
 #define DIVIDE_NUMBER_SHIFTS 12 // must be log2(AVERAGING_SAMPLES)
@@ -52,7 +52,7 @@
 #define SD24B_CURRENT_PGA_GAIN 4
 
 // options G1->0,G2-1,G4-2,G8->3,G16->4,G32->5,G64->6
-#define SD24B_VOLTAGE_PGA_GAIN 4 
+#define SD24B_VOLTAGE_PGA_GAIN 4
 
 // Voltage Mode Gain Factor and Offset Constants
 #define VOLTAGE_60mV_GAIN (2.77521E-7) // Volts per LSB
@@ -111,9 +111,9 @@
 
 #define SD24B_VOLTAGE_ADC_CTL_REG SD24BCCTL0
 #define SD24B_CURRENT_ADC_CTL_REG SD24BCCTL1
-#define SD24B_ADC_EN_BITS                                                      \
-  SD24SCS_4 // Bits that bring ADC in and out of Group 0 (enabling/disabling
-            // ADCs)
+
+// Bits that bring ADC in and out of Group 0 (enabling/disabling ADCs)
+#define SD24B_ADC_EN_BITS SD24SCS_4
 
 // Measurement Modes
 #define DC_VOLTAGE 1
@@ -140,8 +140,8 @@
 // OTHER
 #define BATTERY_CHECK_INTERVAL 2 // minutes
 
-// PLATFORM
-// SPECIFIC--------------------------------------------------------------------------
+// PLATFORM SPECIFIC
+//==============================================================================
 
 // KEYS
 #define KEY_IE_REG P2IE
@@ -170,7 +170,9 @@
 #define CURRENT_RANGE_MASK 0x08
 #define CURRENT_RANGE_LSB BIT3
 
+//==============================================================================
 // Port Initialization defines
+//==============================================================================
 
 /*! This defines the speed of USART 1 or USCI 0 */
 #define UART_PORT_1_SUPPORT 1
@@ -227,20 +229,23 @@
 #define P3REN_INIT 0
 
 //==============================================================================
-//  Hardware Multiplier 32-bit extended result – clean CCS version (NO @, NO __no_init)
-//  This is the version used in every successful TIDM-REFERENCE-DMM-00879 CCS port
+//  Hardware Multiplier 32-bit extended result – clean CCS version (NO @, NO
+//  __no_init) This is the version used in every successful
+//  TIDM-REFERENCE-DMM-00879 CCS port
 //==============================================================================
 
 // Direct volatile pointer access – works perfectly, zero compiler complaints
-#define RES64   (*(volatile unsigned long long int  *)0x04EEULL)   // 64-bit result
-#define RES32   ((volatile unsigned long int       *)0x04EEUL)    // 32-bit array access
-#define RES16   ((volatile unsigned short int      *)0x04EEU)     // 16-bit array access
-#define RES8    ((volatile unsigned char           *)0x04EEU)     // 8-bit array access
+#define RES64 (*(volatile unsigned long long int *)0x04EEULL) // 64-bit result
+#define RES32 ((volatile unsigned long int *)0x04EEUL) // 32-bit array access
+#define RES16 ((volatile unsigned short int *)0x04EEU) // 16-bit array access
+#define RES8 ((volatile unsigned char *)0x04EEU)       // 8-bit array access
 
 // Keep the original macro names the rest of the code expects
-#define RES64_  RES64
-#define RES32_  RES32
-#define RES16_  RES16
-#define RES8_   RES8
+#define RES64_ RES64
+#define RES32_ RES32
+#define RES16_ RES16
+#define RES8_ RES8
+
+//==============================================================================
 
 #endif
