@@ -41,6 +41,7 @@
 #include <msp430f6736.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "dmm_00879_defines.h"
 #include "dmm_00879_hw_setup.h"

@@ -1,8 +1,7 @@
 # FIXED
 
 dmm_00879_processing.obj: ../dmm_00879_processing.c
-dmm_00879_processing.obj: ../dmm_00879_defines.h
-dmm_00879_processing.obj: ../dmm_00879_main.h
+dmm_00879_processing.obj: ../dmm_00879_processing.h
 dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/stdint.h
 dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/_ti_config.h
 dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/linkage.h
@@ -13,6 +12,8 @@ dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.
 dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/machine/_types.h
 dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/machine/_stdint.h
 dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/sys/_stdint.h
+dmm_00879_processing.obj: ../dmm_00879_defines.h
+dmm_00879_processing.obj: ../dmm_00879_main.h
 dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/stdlib.h
 dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/math.h
 dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/_defs.h
@@ -26,9 +27,7 @@ dmm_00879_processing.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.
 
 ../dmm_00879_processing.c:
 
-../dmm_00879_defines.h:
-
-../dmm_00879_main.h:
+../dmm_00879_processing.h:
 
 C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/stdint.h:
 
@@ -49,6 +48,10 @@ C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/machine/_types
 C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/machine/_stdint.h:
 
 C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/sys/_stdint.h:
+
+../dmm_00879_defines.h:
+
+../dmm_00879_main.h:
 
 C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/stdlib.h:
 

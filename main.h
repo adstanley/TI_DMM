@@ -31,8 +31,8 @@
  */
 
 
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef MAIN_H
+#define MAIN_H
 
 #include <stdint.h>
 #include <stdlib.h>

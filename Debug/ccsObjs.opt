@@ -2,6 +2,7 @@
 "./dmm_00879_main.obj"
 "./dmm_00879_processing.obj"
 "./hal_pmm.obj"
+"./uart.obj"
 "../lnk_msp430f6736.cmd"
 -llibmath.a
 -llibc.a
