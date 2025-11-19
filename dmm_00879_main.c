@@ -42,11 +42,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-
 #include "dmm_00879_defines.h"
 #include "dmm_00879_hw_setup.h"
 #include "dmm_00879_main.h"
-
+#include "lcd.h"
 
 // Variables used by other modules
 uint8_t sampling_completed;
@@ -105,7 +104,7 @@ int __low_level_init(void) // low level init function
 }
 
 int main(void) {
-  // 
+  //
   static uint8_t temp;
 
   system_setup();

@@ -55,5 +55,6 @@ void send_sample(float value);
 void test_interface_power_down(void);
 void test_interface_power_up(void);
 void set_display_result_factor(void);
+void power_settings(uint8_t i);
 
 #endif

@@ -229,23 +229,19 @@
 #define P3REN_INIT 0
 
 //==============================================================================
-//  Hardware Multiplier 32-bit extended result – clean CCS version (NO @, NO
-//  __no_init) This is the version used in every successful
-//  TIDM-REFERENCE-DMM-00879 CCS port
+//  Hardware Multiplier 32-bit – FINAL correct signed MAC for AC RMS (CCS)
 //==============================================================================
 
-// Direct volatile pointer access – works perfectly, zero compiler complaints
-#define RES64 (*(volatile unsigned long long int *)0x04EEULL) // 64-bit result
-#define RES32 ((volatile unsigned long int *)0x04EEUL) // 32-bit array access
-#define RES16 ((volatile unsigned short int *)0x04EEU) // 16-bit array access
-#define RES8 ((volatile unsigned char *)0x04EEU)       // 8-bit array access
+// Signed 32-bit Multiply-Accumulate operand 1 (this is the one we need!)
+#define MACS32   MACS32L          // code writes only low 32 bits → perfect
 
-// Keep the original macro names the rest of the code expects
-#define RES64_ RES64
-#define RES32_ RES32
-#define RES16_ RES16
-#define RES8_ RES8
+// Operand 2 – also only low 32 bits are used
+#define OP2_32X   OP2L
 
-//==============================================================================
+// 64-bit signed result – built cleanly from the four official result registers
+#define RES64   ( (unsigned long long)RES3 << 48 | \
+                  (unsigned long long)RES2 << 32 | \
+                  (unsigned long long)RES1 << 16 | \
+                  RES0 )
 
 #endif

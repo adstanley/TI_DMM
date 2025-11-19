@@ -179,7 +179,7 @@ __interrupt void sd24b_adc_interrupt(void) {
     displayed_result_fp = result_fp * displayed_result_factor;
     sampling_completed = 1;
     dc_acc_sampled_value = 0;
-    RES64 = 0;
+    //RES64 = 0;
     sample_count = 0;
 
     if (range_overflow > 0) {

@@ -40,7 +40,6 @@ C_DEPS__QUOTED += \
 
 C_SRCS__QUOTED += \
 "../dmm_00879_hw_setup.c" \
-"../dmm_00879_main.c" \
 "../dmm_00879_processing.c" \
 "../hal_pmm.c" 
 
