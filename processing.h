@@ -9,9 +9,9 @@
  *  **** TI Confidential - NDA Restrictions  ******
  *****************************************************************/
 
-// dmm_00879_processing.h
-#ifndef __DMM_00879_PROCESSING_H__
-#define __DMM_00879_PROCESSING_H__
+// processing.h
+#ifndef __PROCESSING_H__
+#define __PROCESSING_H__
 
 #include <stdint.h>
 
@@ -32,4 +32,4 @@ void set_power_range_and_gain_and_offset(POWER_RANGE i);
 void off(void);
 void update_display2(void);
 
-#endif // END __PROCESSING_H__
+#endif // __PROCESSING_H__

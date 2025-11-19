@@ -1,5 +1,5 @@
-#ifndef __LCD_H
-#define __LCD_H
+#ifndef __LCD_H__
+#define __LCD_H__
 
 /*
     P4.0 = LCD segment line
@@ -104,4 +104,4 @@
 #define LCDCVCTL0_INIT                              (LCDCPEN)
 #define LCDCVCTL1_INIT                              (0)
 
-#endif
+#endif // __LCD_H__

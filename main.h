@@ -31,8 +31,8 @@
  */
 
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef __MAIN_H__
+#define __MAIN_H__
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -57,4 +57,4 @@ void test_interface_power_up(void);
 void set_display_result_factor(void);
 void power_settings(uint8_t i);
 
-#endif
+#endif // __MAIN_H__

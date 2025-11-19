@@ -35,9 +35,9 @@
 //
 //--------------------------------------------------------------------------
 //
-#include "dmm_00879_processing.h"
-#include "dmm_00879_defines.h"
-#include "dmm_00879_main.h"
+#include "processing.h"
+#include "defines.h"
+#include "main.h"
 #include <math.h>
 #include <msp430.h>
 #include <msp430f6736.h>
@@ -47,12 +47,12 @@
 
 extern uint8_t key_debounce;
 extern uint8_t sampling_completed;
-//extern int32_t sampled_value;
+extern int32_t sampled_value;
 extern uint8_t number_is_negative;
 extern uint8_t measurement_mode;
 extern uint8_t Events;
-//extern int32_t active_voltage_offset;
-//extern int32_t active_current_offset;
+extern int32_t active_voltage_offset;
+extern int32_t active_current_offset;
 extern float displayed_result_fp;
 extern float result_fp;
 extern float displayed_result_factor;

@@ -10,10 +10,10 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
-"./dmm_00879_hw_setup.obj" \
-"./dmm_00879_main.obj" \
-"./dmm_00879_processing.obj" \
 "./hal_pmm.obj" \
+"./hardware_setup.obj" \
+"./main.obj" \
+"./processing.obj" \
 "./uart.obj" \
 "../lnk_msp430f6736.cmd" \
 $(GEN_CMDS__FLAG) \
@@ -146,8 +146,8 @@ DMM.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "dmm_00879_hw_setup.obj" "dmm_00879_main.obj" "dmm_00879_processing.obj" "hal_pmm.obj" "uart.obj" 
-	-$(RM) "dmm_00879_hw_setup.d" "dmm_00879_main.d" "dmm_00879_processing.d" "hal_pmm.d" "uart.d" 
+	-$(RM) "hal_pmm.obj" "hardware_setup.obj" "main.obj" "processing.obj" "uart.obj" 
+	-$(RM) "hal_pmm.d" "hardware_setup.d" "main.d" "processing.d" "uart.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

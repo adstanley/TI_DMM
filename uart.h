@@ -2,8 +2,8 @@
   UART.h - UART module
 ==============================================================================*/
 
-#ifndef UART_H
-#define UART_H
+#ifndef __UART_H__
+#define __UART_H__
 
 #include <stdio.h>
 #include <stdint.h>
@@ -18,4 +18,4 @@ void uart_set_baud(uint32_t baud);
 // Call this whenever sampling_completed = 1
 void uart_print_measurement(void);
 
-#endif /* UART_H */
+#endif // __PROCESSING_H__
