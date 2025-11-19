@@ -9,8 +9,8 @@
  *  **** TI Confidential - NDA Restrictions  ******
  *****************************************************************/
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef __MAIN_H
+#define __MAIN_H
 
 // Variables used my other modules
 uint8_t sampling_completed;     // Background.c

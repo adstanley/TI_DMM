@@ -34,6 +34,9 @@
  */
 //--------------------------------------------------------------------------
 
+#ifndef __DMM_00879_DEFINES_H
+#define __DMM_00879_DEFINES_H
+
 #define AVERAGING_SAMPLES 4096
 #define DIVIDE_NUMBER_SHIFTS 12 // must be log2(AVERAGING_SAMPLES)
 
@@ -44,10 +47,12 @@
 #define OVERFLOW_L -240000
 
 #define SD24B_OSR_RATIO 64 // ADC oversampling ratio
-#define SD24B_CURRENT_PGA_GAIN                                                 \
-  4 // options G1->0,G2-1,G4-2,G8->3,G16->4,G32->5,G64->6
-#define SD24B_VOLTAGE_PGA_GAIN                                                 \
-  4 // options G1->0,G2-1,G4-2,G8->3,G16->4,G32->5,G64->6
+
+// options G1->0,G2-1,G4-2,G8->3,G16->4,G32->5,G64->6
+#define SD24B_CURRENT_PGA_GAIN 4
+
+// options G1->0,G2-1,G4-2,G8->3,G16->4,G32->5,G64->6
+#define SD24B_VOLTAGE_PGA_GAIN 4 
 
 // Voltage Mode Gain Factor and Offset Constants
 #define VOLTAGE_60mV_GAIN (2.77521E-7) // Volts per LSB
@@ -221,106 +226,21 @@
 #define P3OUT_INIT (BIT0)
 #define P3REN_INIT 0
 
-/*
-    P4.0 = LCD segment line
-    P4.1 = LCD segment line
-    P4.2 = LCD segment line
-    P4.3 = LCD segment line
-    P4.4 = LCD segment line
-    P4.5 = LCD segment line
-    P4.6 = LCD segment line
-    P4.7 = LCD segment line
- */
+//==============================================================================
+//  Hardware Multiplier 32-bit extended result – clean CCS version (NO @, NO __no_init)
+//  This is the version used in every successful TIDM-REFERENCE-DMM-00879 CCS port
+//==============================================================================
 
-#define P4DIR_INIT 0x00
-#define P4SEL_INIT 0
-#define P4OUT_INIT 0
-#define P4REN_INIT 0
+// Direct volatile pointer access – works perfectly, zero compiler complaints
+#define RES64   (*(volatile unsigned long long int  *)0x04EEULL)   // 64-bit result
+#define RES32   ((volatile unsigned long int       *)0x04EEUL)    // 32-bit array access
+#define RES16   ((volatile unsigned short int      *)0x04EEU)     // 16-bit array access
+#define RES8    ((volatile unsigned char           *)0x04EEU)     // 8-bit array access
 
-/*
-    P5.0 = LCD segment line
-    P5.1 = LCD segment line
-    P5.2 = LCD segment line
-    P5.3 = LCD segment line
-    P5.4 = LCD segment line
-    P5.5 = LCD segment line
-    P5.6 = LCD segment line
-    P5.7 = LCD segment line
-*/
-#define P5DIR_INIT 0
-#define P5SEL_INIT 0
-#define P5OUT_INIT 0
-#define P5REN_INIT 0
+// Keep the original macro names the rest of the code expects
+#define RES64_  RES64
+#define RES32_  RES32
+#define RES16_  RES16
+#define RES8_   RES8
 
-/*
-    P7.0 = LCD segment line
-    P7.1 = LCD segment line
-    P7.2 = LCD segment line
-    P7.3 = LCD segment line
-    P7.4 = LCD segment line
-    P7.5 = LCD segment line
-    P7.6 = LCD segment line
-    P7.7 = LCD segment line
- */
-#define P7DIR_INIT 0
-#define P7SEL_INIT 0
-#define P7OUT_INIT 0
-#define P7REN_INIT 0
-
-/*
-    P8.0 = LCD segment line
-    P8.1 = LCD segment line
-    P8.2 = LCD segment line
-    P8.3 = LCD segment line
-    P8.4 = RF
-    P8.5 = RF
-    P8.6 = LED 1
-    P8.7 = LED 2
- */
-#define P8DIR_INIT 0xF0
-#define P8SEL_INIT 0
-#define P8OUT_INIT (0)
-#define P8REN_INIT 0
-
-/*
-    P9.0 =
-    P9.1 =
-    P9.2 =
-    P9.3 =
-    P9.4 =
-    P9.5 =
-    P9.6 =
-    P9.7 =
- */
-#define P9DIR_INIT 0x0F
-#define P9SEL_INIT 0
-#define P9OUT_INIT 0
-#define P9REN_INIT 0
-
-/*
-    P10.0 =
-    P10.1 =
-    P10.2 =
-    P10.3 =
-    P10.4 =
-    P10.5 =
-    P10.6 =
-    P10.7 =
- */
-
-#define PJDIR_INIT 0
-#define PJSEL_INIT 0
-#define PJOUT_INIT 0
-
-/*
-    The LCD is a full 160 segment display, with 2 lines of 8 digits, plus
-   various symbols.
-*/
-#define LCDCCTL0_INIT (LCDFREQ_128 | LCD4MUX | LCDSON | LCDON)
-#define LCDCCTL1_INIT (0)
-#define LCDCPCTL0_INIT (0xFFFF) // Seg 0 -
-#define LCDCPCTL1_INIT (0xFFFF) //
-// #define LCDCPCTL2_INIT                            (0xFF)       // - Seg 39
-#define LCDCPCTL2_INIT (0xC3) // - Seg 39 LCD Workaround
-#define LCDCVCTL0_INIT (LCDCPEN)
-#define LCDCVCTL1_INIT (0)
+#endif

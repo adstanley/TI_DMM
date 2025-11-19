@@ -30,8 +30,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SETUP_H
-#define SETUP_H
+#ifndef __SETUP_H
+#define __SETUP_H
 
 // Module Prototypes
 void system_setup(void);

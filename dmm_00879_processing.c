@@ -77,6 +77,9 @@ uint8_t range_overflow = 0;
   This is the main interrupt routine where the main signal processing is done
   ---------------------------------------------------------------------------*/
 
+#define SD24BMEM0_32 SD24BMEMH0
+#define SD24BMEM1_32 SD24BMEMH1
+
 #pragma vector = SD24B_VECTOR
 __interrupt void sd24b_adc_interrupt(void) {
   Events |= SD24B_EVENT; // set SD24B ADC Event bit

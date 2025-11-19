@@ -29,30 +29,29 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/****************************************************************
-  	
 
- *****************************************************************/
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef __MAIN_H
+#define __MAIN_H
 
-// Module Prototypes
-void Main(void);
+#include <stdint.h>
+#include <stdlib.h>
+
+// Module Prototypes - FIXED
+int main(void);
 void voltage_settings(uint8_t);
 void current_settings(uint8_t);
-void power_settings(uint8_t);
 void dc_voltage_measurement_mode(void);
 void ac_voltage_measurement_mode(void);
 void dc_current_measurement_mode(void);
 void ac_current_measurement_mode(void);
 void power_measurement_mode(void);
 void off(void);
-void update_display();
-void enable_disable_ADCs(uint8_t);
+void update_display(void);
+void enable_disable_ADCs(uint8_t mode);
 void WDT_Enable(void);
 void WDT_Disable(void);
-void send_sample(float);
+void send_sample(float value);
 void test_interface_power_down(void);
 void test_interface_power_up(void);
 void set_display_result_factor(void);

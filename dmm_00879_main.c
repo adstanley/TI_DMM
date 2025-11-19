@@ -104,7 +104,8 @@ int __low_level_init(void) // low level init function
   return 1;
 }
 
-void main(void) {
+int main(void) {
+  // 
   static uint8_t temp;
 
   system_setup();
