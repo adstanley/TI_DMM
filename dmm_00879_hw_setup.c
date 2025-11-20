@@ -41,27 +41,31 @@
 #include "lcd.h"
 #include <msp430f6736.h>
 #include <stdint.h>
+#include "clock.h"
 
 void system_setup(void) {
-  WDTCTL = WDTPW + WDTHOLD + WDTSSEL_2 + WDTTMSEL +
-           WDTIS_7; // Configure WDT for debounce, VLOCLK source, interval
-                    // timer, 6.4mS per tick
+  // WDTCTL = WDTPW + WDTHOLD + WDTSSEL_2 + WDTTMSEL +
+  //          WDTIS_7; // Configure WDT for debounce, VLOCLK source, interval
+  //                   // timer, 6.4mS per tick
 
-  UCSCTL1 = 0;
-  UCSCTL1 |= DCORSEL_5; // Target 16MHz for MCLK
-  // UCSCTL1 |= DCORSEL_4;				// Target 16MHz for MCLK
-  UCSCTL3 |= SELREF_2; // FLL ref clock to RFOCLK
-  UCSCTL4 = 0;
-  UCSCTL4 |= SELA_1 + SELS_3 + SELM_3; // ACLK=VLOCK, SMCLK=DC0CLK, MCLK=DCOCLK
-  UCSCTL5 |= DIVS_2 + DIVS_1;          // ACLK/1, SMCLK/8, MCLK/1
-  // UCSCTL5 |= DIVS_2;              // ACLK/1, SMCLK/4, MCLK/1
-  UCSCTL6 = 0x010D;
-  UCSCTL2 = 511; // Set FLLN to 511 (/512)
-  // UCSCTL2 = 255;					// Set FLLN to 511
-  // (/512)
-  UCSCTL2 |= FLLD_0; // Set FLLD to divide by 1
-  SetVCore(2);
+  // UCSCTL1 = 0;
+  // UCSCTL1 |= DCORSEL_5; // Target 16MHz for MCLK
+  // // UCSCTL1 |= DCORSEL_4;				// Target 16MHz for MCLK
+  // UCSCTL3 |= SELREF_2; // FLL ref clock to RFOCLK
+  // UCSCTL4 = 0;
+  // UCSCTL4 |= SELA_1 + SELS_3 + SELM_3; // ACLK=VLOCK, SMCLK=DC0CLK, MCLK=DCOCLK
+  // UCSCTL5 |= DIVS_2 + DIVS_1;          // ACLK/1, SMCLK/8, MCLK/1
+  // // UCSCTL5 |= DIVS_2;              // ACLK/1, SMCLK/4, MCLK/1
+  // UCSCTL6 = 0x010D;
+  // UCSCTL2 = 511; // Set FLLN to 511 (/512)
+  // // UCSCTL2 = 255;					// Set FLLN to 511
+  // // (/512)
+  // UCSCTL2 |= FLLD_0; // Set FLLD to divide by 1
 
+
+  // SetVCore(2);
+  Clock_Init_16MHz_XT1();
+  
   P1OUT = P1OUT_INIT;
   P1DIR = P1DIR_INIT;
   P1SEL = P1SEL_INIT;

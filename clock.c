@@ -1,9 +1,13 @@
 #include <msp430f6736.h>
+#include "hal_pmm.h"
+#include "timer.h"
 
 void Clock_Init_16MHz_XT1(void) {
-
   // Assume WDT was stopped in main() or startup code.
 
+  // Required for 16+ MHz
+  SetVCore(PMMCOREV_2); 
+  
   // --- 1. Route XT1 crystal pins to the UCS ---
   // P5.0 = XIN, P5.1 = XOUT for the low-frequency crystal.
   P5SEL |= BIT0 | BIT1;
@@ -136,5 +140,9 @@ void Clock_Init_16MHz_XT1(void) {
   //
   // At 16 MHz, 500000 cycles ≈ 31.25 ms.
   // During ramp-up it might be slightly different, but this is a safe wait.
-  __delay_cycles(500000); // ~30 ms at ~16 MHz
+  // __delay_cycles(500000); // ~30 ms at ~16 MHz
+  delay_ms(50);
+  // delay_A1_ms(50);
+
+
 }

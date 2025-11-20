@@ -46,6 +46,9 @@
 #include "dmm_00879_hw_setup.h"
 #include "dmm_00879_main.h"
 #include "lcd.h"
+#include "clock.h"
+#include "uart.h"
+#include "timer.h"
 
 // Variables used by other modules
 uint8_t sampling_completed;
@@ -107,15 +110,34 @@ int main(void) {
   //
   static uint8_t temp;
 
-  system_setup();
-  //update_display();
+  __low_level_init();
 
-  // --- TEST MESSAGE ---
-  // Add this right after system_setup to verify console output on boot
-  uart_println();
-  uart_print("System Booted: DMM Console Active");
-  uart_println();
-  // --------------------
+  // Hardware Setup
+  system_setup();
+
+  // Init UART
+  //uart_init_9600();
+  uart_init_115200();
+
+  // === Boot message ===
+  uart_print("\r\n\r\n");
+  uart_print("****************************************\r\n");
+  uart_print("* TI DMM-00879 – External Crystal Test *\r\n");
+  uart_print("* 32.768 kHz XT1 → 16.78 MHz MCLK/SMCLK*\r\n");
+  uart_print("* UART 112500 baud                     *\r\n");
+  uart_print("****************************************\r\n\r\n");
+
+  /*// == BLOCKER
+  uint32_t counter = 0;
+
+  while (1) {
+    uart_print("Heartbeat: ");
+    uart_print_int(counter++);
+    uart_println();
+    __delay_cycles(16777216);
+    // delay_ms(1000);
+  }
+  // == END BLOCKER*/
 
   enable_disable_ADCs(DC_VOLTAGE);
   voltage_settings(dc_voltage_range);
@@ -846,52 +868,52 @@ void update_display() {
   LCDM1 = LCD_Char_Map[display_value % 10];
 }
 
-// Send a single character via UCA1
-void uart_putc(char c) {
-    // Poll the Interrupt Flag Register: Wait until the Transmit Buffer is empty
-    // UCTXIFG is defined in msp430f6736.h
-    while (!(UCA1IFG & UCTXIFG));
+// // Send a single character via UCA1
+// void uart_putc(char c) {
+//     // Poll the Interrupt Flag Register: Wait until the Transmit Buffer is empty
+//     // UCTXIFG is defined in msp430f6736.h
+//     while (!(UCA1IFG & UCTXIFG));
     
-    // Write the character to the Transmit Buffer
-    UCA1TXBUF = c;
-}
+//     // Write the character to the Transmit Buffer
+//     UCA1TXBUF = c;
+// }
 
-// Send a null-terminated string
-void uart_print(const char *str) {
-    while (*str) {
-        uart_putc(*str);
-        str++;
-    }
-}
+// // Send a null-terminated string
+// void uart_print(const char *str) {
+//     while (*str) {
+//         uart_putc(*str);
+//         str++;
+//     }
+// }
 
-// Send an integer (useful for printing your measured values)
-void uart_print_int(int32_t num) {
-    char buffer[12];
-    int i = 0;
+// // Send an integer (useful for printing your measured values)
+// void uart_print_int(int32_t num) {
+//     char buffer[12];
+//     int i = 0;
     
-    if (num == 0) {
-        uart_putc('0');
-        return;
-    }
+//     if (num == 0) {
+//         uart_putc('0');
+//         return;
+//     }
 
-    if (num < 0) {
-        uart_putc('-');
-        num = -num;
-    }
+//     if (num < 0) {
+//         uart_putc('-');
+//         num = -num;
+//     }
 
-    // Extract digits in reverse order
-    while (num > 0) {
-        buffer[i++] = (num % 10) + '0';
-        num /= 10;
-    }
+//     // Extract digits in reverse order
+//     while (num > 0) {
+//         buffer[i++] = (num % 10) + '0';
+//         num /= 10;
+//     }
 
-    // Print digits in correct order
-    while (i > 0) {
-        uart_putc(buffer[--i]);
-    }
-}
+//     // Print digits in correct order
+//     while (i > 0) {
+//         uart_putc(buffer[--i]);
+//     }
+// }
 
-// Print a New Line (Carriage Return + Line Feed)
-void uart_println(void) {
-    uart_print("\r\n");
-}
+// // Print a New Line (Carriage Return + Line Feed)
+// void uart_println(void) {
+//     uart_print("\r\n");
+// }

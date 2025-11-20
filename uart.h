@@ -1,6 +1,6 @@
 #ifndef __UART_H
 #define __UART_H
-
+#include <stdint.h>
 // Module Prototypes
 void uart_init_9600(void);
 void uart_init_115200(void);

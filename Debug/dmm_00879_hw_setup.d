@@ -20,6 +20,7 @@ dmm_00879_hw_setup.obj: C:/ti/ccs2031/ccs/ccs_base/msp430/include/msp430f6736.h
 dmm_00879_hw_setup.obj: C:/ti/ccs2031/ccs/ccs_base/msp430/include/in430.h
 dmm_00879_hw_setup.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/intrinsics.h
 dmm_00879_hw_setup.obj: C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/intrinsics_legacy_undefs.h
+dmm_00879_hw_setup.obj: ../clock.h
 
 ../dmm_00879_hw_setup.c:
 
@@ -60,4 +61,6 @@ C:/ti/ccs2031/ccs/ccs_base/msp430/include/in430.h:
 C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/intrinsics.h:
 
 C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/intrinsics_legacy_undefs.h:
+
+../clock.h:
 

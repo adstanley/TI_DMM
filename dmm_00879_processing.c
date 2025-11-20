@@ -247,12 +247,12 @@ __interrupt void wdt_interrupt(void) {
   _BIC_SR_IRQ(LPM0_bits); // Exit LPM0
 }
 
-#pragma vector = TIMER0_A0_VECTOR
-__interrupt void battery_check_interrupt(void) {
-  {
-    ;
-  }
-}
+// #pragma vector = TIMER0_A0_VECTOR
+// __interrupt void battery_check_interrupt(void) {
+//   {
+//     ;
+//   }
+// }
 
 #pragma vector = ADC10_VECTOR
 __interrupt void adc10_interrupt(void) { ; }
