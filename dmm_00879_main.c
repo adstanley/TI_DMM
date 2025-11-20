@@ -108,7 +108,14 @@ int main(void) {
   static uint8_t temp;
 
   system_setup();
-  update_display();
+  //update_display();
+
+  // --- TEST MESSAGE ---
+  // Add this right after system_setup to verify console output on boot
+  uart_println();
+  uart_print("System Booted: DMM Console Active");
+  uart_println();
+  // --------------------
 
   enable_disable_ADCs(DC_VOLTAGE);
   voltage_settings(dc_voltage_range);
@@ -184,14 +191,16 @@ void dc_voltage_measurement_mode() {
       }
     }
 
-    ////// KEY1    ///////////////////   Return to main measurement mode loop
+    // KEY 1 - MODE
+    // SETS MEASUREMENT MODE
     else if ((Events & KEY1_EVENT) > 0) {
       Events &= ~KEY1_EVENT; // clear Event bit
-      update_display();
+      // update_display();
       return;
     }
-    ////// KEY2 ///////////////////////////  SETS RANGE OF EACH MEASUREMENT MODE
-    /////////////////////
+    
+    // KEY2 - RANGE
+    // SETS RANGE OF EACH MEASUREMENT MODE
     else if ((Events & KEY2_EVENT) > 0) {
       Events &= ~KEY2_EVENT;
 
@@ -835,4 +844,54 @@ void update_display() {
 
   display_value /= 10;
   LCDM1 = LCD_Char_Map[display_value % 10];
+}
+
+// Send a single character via UCA1
+void uart_putc(char c) {
+    // Poll the Interrupt Flag Register: Wait until the Transmit Buffer is empty
+    // UCTXIFG is defined in msp430f6736.h
+    while (!(UCA1IFG & UCTXIFG));
+    
+    // Write the character to the Transmit Buffer
+    UCA1TXBUF = c;
+}
+
+// Send a null-terminated string
+void uart_print(const char *str) {
+    while (*str) {
+        uart_putc(*str);
+        str++;
+    }
+}
+
+// Send an integer (useful for printing your measured values)
+void uart_print_int(int32_t num) {
+    char buffer[12];
+    int i = 0;
+    
+    if (num == 0) {
+        uart_putc('0');
+        return;
+    }
+
+    if (num < 0) {
+        uart_putc('-');
+        num = -num;
+    }
+
+    // Extract digits in reverse order
+    while (num > 0) {
+        buffer[i++] = (num % 10) + '0';
+        num /= 10;
+    }
+
+    // Print digits in correct order
+    while (i > 0) {
+        uart_putc(buffer[--i]);
+    }
+}
+
+// Print a New Line (Carriage Return + Line Feed)
+void uart_println(void) {
+    uart_print("\r\n");
 }

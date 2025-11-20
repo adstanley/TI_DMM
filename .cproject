@@ -85,6 +85,9 @@
                             <option id="com.ti.ccstudio.buildDefinitions.MSP430_21.6.compilerID.C___DIALECT.1509512820" superClass="com.ti.ccstudio.buildDefinitions.MSP430_21.6.compilerID.C___DIALECT" value="com.ti.ccstudio.buildDefinitions.MSP430_21.6.compilerID.C___DIALECT._none" valueType="enumerated"/>
                         </tool>
                     </fileInfo>
+                    <sourceEntries>
+                        <entry excluding="main2.c|dmm_00879_main.c|dmm_00879_processing.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                    </sourceEntries>
                 </configuration>
             </storageModule>
             <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>

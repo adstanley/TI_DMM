@@ -1,0 +1,321 @@
+// /*==============================================================================
+//   DMM - Defines Module+
+  
+//  * Copyright (c) 2016, Texas Instruments Incorporated
+//  * All rights reserved.
+//  *
+//  * Redistribution and use in source and binary forms, with or without
+//  * modification, are permitted provided that the following conditions
+//  * are met:
+//  *
+//  * * Redistributions of source code must retain the above copyright
+//  * notice, this list of conditions and the following disclaimer.
+//  *
+//  * * Redistributions in binary form must reproduce the above copyright
+//  * notice, this list of conditions and the following disclaimer in the
+//  * documentation and/or other materials provided with the distribution.
+//  *
+//  * * Neither the name of Texas Instruments Incorporated nor the names of
+//  * its contributors may be used to endorse or promote products derived
+//  * from this software without specific prior written permission.
+//  *
+//  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+//  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+//  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+//  * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+//  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+//  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+//  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+//  * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+//  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+//  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// ==============================================================================*/
+
+// #ifndef __DMM_00879_DEFINES_H
+// #define __DMM_00879_DEFINES_H
+
+// //==============================================================================
+// // Signal Processing & Filtering Constants
+// //==============================================================================
+
+// /* * Number of ADC samples to accumulate before processing.
+//  * 4096 samples allows for significant noise reduction via oversampling.
+//  */
+// #define AVERAGING_SAMPLES 4096
+
+// /* * Bit shift count for division. 
+//  * 2^12 = 4096. Shifting right by 12 is equivalent to dividing by 4096 
+//  * but is much faster on the MSP430 CPU than a hardware/software divide.
+//  */
+// #define DIVIDE_NUMBER_SHIFTS 12 
+
+// /* * Coefficients for First-Order IIR (Infinite Impulse Response) filters.
+//  * Used for smoothing the display output (Software Low Pass Filter).
+//  * Formula usually looks like: Output = (Input * A) + (PrevOutput * (1-A))
+//  */
+// #define DC_A_COEFFICIENT .4 
+// #define AC_A_COEFFICIENT .3
+
+// /* * Software limits for the ADC readings. 
+//  * Even though the 24-bit ADC can go higher (approx +/- 8 million), 
+//  * the DMM logic clamps or detects overflow at +/- 240,000 counts 
+//  * (likely for a 24,000 count display logic).
+//  */
+// #define OVERFLOW_H 240000 
+// #define OVERFLOW_L -240000
+
+// //==============================================================================
+// // SD24_B (Sigma-Delta ADC) Configuration
+// //==============================================================================
+
+// /* * Oversampling Ratio (OSR) setting for the SD24BOSR register.
+//  * Higher OSR = Better resolution/SNR, but slower sampling rate.
+//  */
+// #define SD24B_OSR_RATIO 64 
+
+// /* * Programmable Gain Amplifier (PGA) settings.
+//  * Based on the comment G16->4, this sets the ADC internal gain to 16x.
+//  * This allows measurement of smaller signals utilizing the full range of the ADC.
+//  */
+// #define SD24B_CURRENT_PGA_GAIN 4
+// #define SD24B_VOLTAGE_PGA_GAIN 4
+
+// //==============================================================================
+// // Calibration Constants (y = mx + b)
+// // Used to convert raw ADC counts to real-world units (Volts/Amps/Watts)
+// //==============================================================================
+
+// // --- Voltage Mode Calibration ---
+// #define VOLTAGE_60mV_GAIN (2.77521E-7) // Multiplier for 60mV range
+// #define VOLTAGE_60mV_OFFSET 2218       // Zero-offset correction
+
+// #define VOLTAGE_600mV_GAIN (3.02116E-6) 
+// #define VOLTAGE_600mV_OFFSET 1911       
+
+// #define VOLTAGE_6V_GAIN (3.03370E-5) 
+// #define VOLTAGE_6V_OFFSET 2892       
+
+// #define VOLTAGE_60V_GAIN (3.02877E-4) 
+// #define VOLTAGE_60V_OFFSET 2400       
+
+// // --- Current Mode Calibration ---
+// #define CURRENT_600uA_GAIN (2.88383E-9) 
+// #define CURRENT_600uA_OFFSET 2386       
+
+// #define CURRENT_60mA_GAIN (5.48909E-7) 
+// #define CURRENT_60mA_OFFSET 2383       
+
+// // --- Power Measurement Mode Calibration ---
+// #define POWER_MODE_6V_GAIN (3.03358E-5)    
+// #define POWER_MODE_600uA_GAIN (2.88376E-9) 
+// #define POWER_MODE_6V_OFFSET 2117          
+// #define POWER_MODE_600uA_OFFSET 2232       
+
+// #define POWER_MODE_60V_GAIN (3.02876E-4)  
+// #define POWER_MODE_60mA_GAIN (5.48853E-7) 
+// #define POWER_MODE_60V_OFFSET 2186        
+// #define POWER_MODE_60mA_OFFSET 2205       
+
+// //==============================================================================
+// // System Configuration
+// //==============================================================================
+
+// /* * PMM (Power Management Module) setting.
+//  * Mode 2 usually corresponds to higher core voltage (Vcore level 2) 
+//  * required to run the MCU at higher frequencies (e.g., 16MHz or 20MHz).
+//  */
+// #define MCU_OPERATING_MODE_2 
+
+// /* * Debug Flag. 
+//  * If 1, code likely dumps raw ADC samples to UART for analysis.
+//  */
+// #define TEST_MODE 0          
+
+// // MSP430 Flash Memory organization constants
+// #define FLASH_MAIN_PAGE_SIZE 512
+// #define FLASH_INFO_PAGE_SIZE 128
+
+// //==============================================================================
+// // Application State Machine Definitions
+// //==============================================================================
+
+// // Event Flags (Bitmasks) for the main system loop
+// #define KEY1_EVENT 0x01     // Button 1 pressed
+// #define KEY2_EVENT 0x02     // Button 2 pressed
+// #define RTC_EVENT 0x04      // Real-Time Clock interrupt (timing update)
+// #define SD24B_EVENT 0x08    // ADC conversion complete
+
+// // Key Debouncing
+// #define KEY_DEBOUNCE_COUNT 15 // Number of ticks to wait to confirm key press (approx 96ms)
+
+// //==============================================================================
+// // Hardware Mapping: SD24_B ADC Registers
+// // Maps generic names to the specific MSP430F6736 header definitions
+// //==============================================================================
+
+// // Interrupt Flag Registers
+// #define SD24B_IFG_REG SD24BIFG          // Global SD24B Interrupt Flag Register
+// #define SD24B_VOLTAGE_IFG_BIT SD24IFG0  // Channel 0 (Voltage) Interrupt Flag
+// #define SD24B_CURRENT_IFG_BIT SD24IFG1  // Channel 1 (Current) Interrupt Flag
+
+// // Interrupt Enable Registers
+// #define SD24B_IE_REG SD24BIE            // Global SD24B Interrupt Enable Register
+// #define SD24B_VOLTAGE_IE_BIT SD24IE0    // Enable IRQ for Channel 0
+// #define SD24B_CURRENT_IE_BIT SD24IE1    // Enable IRQ for Channel 1
+
+// // Channel Control Registers
+// #define SD24B_VOLTAGE_ADC_CTL_REG SD24BCCTL0 // Control register for Channel 0
+// #define SD24B_CURRENT_ADC_CTL_REG SD24BCCTL1 // Control register for Channel 1
+
+// /* * Start Conversion Select Bits.
+//  * SD24SCS_4 (Binary 100) usually selects a specific Group trigger 
+//  * or external trigger source depending on the specific family user guide.
+//  */
+// #define SD24B_ADC_EN_BITS SD24SCS_4
+
+// //==============================================================================
+// // DMM Measurement State Enums
+// //==============================================================================
+// #define DC_VOLTAGE 1
+// #define AC_VOLTAGE 2
+// #define DC_CURRENT 3
+// #define AC_CURRENT 4
+// #define POWER 5
+// #define OFF 6
+// #define OHMS 7
+
+// // Range Enums (Used for switch/case logic in auto-ranging)
+// #define V_60mV 1
+// #define V_600mV 2
+// #define V_6V 3
+// #define V_60V 4
+
+// #define I_60mA 1
+// #define I_600uA 2
+
+// #define P_3600uW 1
+// #define P_3600mW 2
+
+// #define R_1O 1
+// #define R_10K 2
+// #define R_100K 3
+// #define R_1M 4
+
+// #define BATTERY_CHECK_INTERVAL 2 // Check battery every 2 minutes
+
+// //==============================================================================
+// // PLATFORM SPECIFIC I/O MAPPING
+// //==============================================================================
+
+// // --- User Input (Keys) ---
+// // Mapped to Port 2, Pins 6 and 7
+// #define KEY_IE_REG P2IE         // Port 2 Interrupt Enable
+// #define KEY_IFG_REG P2IFG       // Port 2 Interrupt Flag
+// #define KEY_PORT_IN_REG P2IN    // Port 2 Input Register
+// #define KEY1 BIT6               // P2.6
+// #define KEY2 BIT7               // P2.7
+// #define ALL_KEY_MASK 0xC0       // Mask for both keys (BIT6 | BIT7)
+
+// // --- Power & Test Pins ---
+// #define FRONT_END_EN_REG P2OUT  // Port 2 Output Register
+// #define FRONT_END_EN_BIT BIT0   // P2.0 - Controls Analog Front End Power
+// #define BATT_TEST_EN_REG P2OUT  
+// #define BATT_TEST_EN_BIT BIT4   // P2.4 - Enables Battery Test Load
+// #define TEST_EN_REG P1OUT
+// #define TEST_EN_BIT BIT7        // P1.7 - Test Enable Signal
+// #define TEST_RAM_CS_REG P1OUT
+// #define TEST_RAM_CS_BIT BIT0    // P1.0 - Chip Select for External RAM/Flash
+
+// // --- Analog Front End (AFE) Range Switching ---
+// // Controls external Muxes/Relays via GPIO to change measurement ranges
+// #define VOLTAGE_RANGE_REG P2OUT
+// #define VOLTAGE_RANGE_MASK 0x06 // Controls P2.1 and P2.2
+// #define VOLTAGE_RANGE_MSB BIT2
+// #define VOLTAGE_RANGE_LSB BIT1
+
+// #define CURRENT_RANGE_REG P2OUT
+// #define CURRENT_RANGE_MASK 0x08 // Controls P2.3
+// #define CURRENT_RANGE_LSB BIT3
+
+// //==============================================================================
+// // Port Initialization Defines
+// // Sets up the initial state of GPIOs at boot
+// //==============================================================================
+
+// /*! This defines the speed of USART 1 or USCI 0 */
+// #define UART_PORT_1_SUPPORT 1
+// #define UART1_BAUD_RATE 9600
+
+// /*
+//  * PORT 1 CONFIGURATION
+//  * P1.0 (Out) - Memory CS
+//  * P1.1 (Out) - NC (Not Connected)
+//  * P1.2 (Sel) - UCA0SOMI (SPI Master In)
+//  * P1.3 (Sel) - UCA0SIMO (SPI Master Out)
+//  * P1.4 (Sel) - UCA0RXD (UART RX)
+//  * P1.5 (Sel) - UCA0TXD (UART TX)
+//  * P1.6 (Sel) - UCA0CLK (SPI Clock)
+//  * P1.7 (Out) - TEST_EN
+//  */
+// #define P1DIR_INIT (BIT0 | BIT1 | BIT3 | BIT6 | BIT7) // 1=Output, 0=Input
+// #define P1SEL_INIT (BIT2 | BIT3 | BIT4 | BIT5 | BIT6) // 1=Peripheral, 0=GPIO
+// #define P1OUT_INIT (BIT0)                             // Initial state: CS High (inactive)
+// #define P1REN_INIT (0)                                // No internal pull-ups
+// #define P1MAP01_INIT (0)                              // Port Mapping (Default)
+
+// /*
+//  * PORT 2 CONFIGURATION
+//  * P2.0 (Out) - SCL for EEPROM (Bit-banged or I2C) / Front End Enable
+//  * P2.1 (Out) - SDA for EEPROM / Voltage Range LSB
+//  * P2.2 (Out) - A2SOMI / Voltage Range MSB
+//  * P2.3 (Out) - A2SIMO / Current Range
+//  * P2.4 (Out) - A2CS / Battery Test Enable
+//  * P2.5 (Out) - A2CLK
+//  * P2.6 (In)  - Key1 (Input with Pull-up)
+//  * P2.7 (In)  - Key2 (Input with Pull-up)
+//  */
+// #define P2DIR_INIT (BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5) // 0-5 Outputs, 6-7 Inputs
+// #define P2SEL_INIT (0)                                       // All GPIO
+// #define P2OUT_INIT (BIT0 | BIT6 | BIT7)                      // Init High: Front End En, Pull-ups for Keys
+// #define P2REN_INIT (BIT6 | BIT7)                             // Enable Resistors for Keys
+// #define P2IES_INIT (BIT6 | BIT7)                             // Interrupt Edge Select: High-to-Low (Button Press)
+
+// /*
+//  * PORT 3 CONFIGURATION
+//  * P3.0 - P3.3 (Out) - Operating Voltage Select / Mux Control
+//  * P3.4 - P3.7 (Out) - LCD Segment lines (Controlled by LCD Controller peripheral usually)
+//  */
+// #define P3DIR_INIT 0x0F // Lower nibble output
+// #define P3SEL_INIT 0    
+// #define P3OUT_INIT (BIT0)
+// #define P3REN_INIT 0
+
+// //==============================================================================
+// // Hardware Multiplier 32-bit (MPY32) Macros
+// // Optimized for Root Mean Square (RMS) calculations
+// //==============================================================================
+
+// /* * MPY32 Hardware Multiplier Access.
+//  * The MSP430F6736 has a dedicated 32-bit multiplier peripheral.
+//  * MACS32L is the "Multiply Accumulate Signed 32-bit Low Word" register.
+//  * Writing to this register initiates the multiplication of the value written
+//  * with the value currently in OP2, and adds the result to the Result register.
+//  */
+// #define MACS32   MACS32L          // Accesses address 0x04D0 (MACS32L)
+
+// // Operand 2 – Writing here sets the second number for the multiplication.
+// #define OP2_32X   OP2L
+
+// /* * 64-bit Result Reconstruction.
+//  * The multiplier result spans 4 16-bit registers: RES0, RES1, RES2, RES3.
+//  * This macro casts them to 64-bit (unsigned long long) and shifts them 
+//  * into position to create a single 64-bit result variable in C.
+//  * Essential for accumulating squares (V^2 or I^2) for RMS measurements without overflow.
+//  */
+// #define RES64   ( (unsigned long long)RES3 << 48 | \
+//                   (unsigned long long)RES2 << 32 | \
+//                   (unsigned long long)RES1 << 16 | \
+//                   RES0 )
+
+// #endif

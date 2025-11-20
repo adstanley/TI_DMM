@@ -56,5 +56,9 @@ void test_interface_power_down(void);
 void test_interface_power_up(void);
 void set_display_result_factor(void);
 void power_settings(uint8_t i);
+void uart_putc(char c);
+void uart_print(const char *str);
+void uart_print_int(int32_t num);
+void uart_println(void);
 
 #endif
