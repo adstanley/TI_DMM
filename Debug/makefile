@@ -15,6 +15,7 @@ ORDERED_OBJS += \
 "./dmm_00879_main.obj" \
 "./dmm_00879_processing.obj" \
 "./hal_pmm.obj" \
+"./lcd.obj" \
 "./timer.obj" \
 "./uart.obj" \
 "../lnk_msp430f6736.cmd" \
@@ -148,8 +149,8 @@ DMM.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "clock.obj" "dmm_00879_hw_setup.obj" "dmm_00879_main.obj" "dmm_00879_processing.obj" "hal_pmm.obj" "timer.obj" "uart.obj" 
-	-$(RM) "clock.d" "dmm_00879_hw_setup.d" "dmm_00879_main.d" "dmm_00879_processing.d" "hal_pmm.d" "timer.d" "uart.d" 
+	-$(RM) "clock.obj" "dmm_00879_hw_setup.obj" "dmm_00879_main.obj" "dmm_00879_processing.obj" "hal_pmm.obj" "lcd.obj" "timer.obj" "uart.obj" 
+	-$(RM) "clock.d" "dmm_00879_hw_setup.d" "dmm_00879_main.d" "dmm_00879_processing.d" "hal_pmm.d" "lcd.d" "timer.d" "uart.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

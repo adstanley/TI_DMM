@@ -64,7 +64,7 @@ void system_setup(void) {
 
 
   // SetVCore(2);
-  Clock_Init_16MHz_XT1();
+  Clock_Init_16MHz();
   
   P1OUT = P1OUT_INIT;
   P1DIR = P1DIR_INIT;
@@ -124,6 +124,7 @@ void system_setup(void) {
   LCDCPCTL2 = 0xFFC3;  // Changed for LCD workaround;
   LCDCMEMCTL = 0xFFF2; // clear LCD memory
   LCDCBLKCTL = 0x00E6;
+
 
   // AFE Setup
 

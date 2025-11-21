@@ -14,6 +14,7 @@ C_SRCS += \
 ../dmm_00879_main.c \
 ../dmm_00879_processing.c \
 ../hal_pmm.c \
+../lcd.c \
 ../timer.c \
 ../uart.c 
 
@@ -23,6 +24,7 @@ C_DEPS += \
 ./dmm_00879_main.d \
 ./dmm_00879_processing.d \
 ./hal_pmm.d \
+./lcd.d \
 ./timer.d \
 ./uart.d 
 
@@ -32,6 +34,7 @@ OBJS += \
 ./dmm_00879_main.obj \
 ./dmm_00879_processing.obj \
 ./hal_pmm.obj \
+./lcd.obj \
 ./timer.obj \
 ./uart.obj 
 
@@ -41,6 +44,7 @@ OBJS__QUOTED += \
 "dmm_00879_main.obj" \
 "dmm_00879_processing.obj" \
 "hal_pmm.obj" \
+"lcd.obj" \
 "timer.obj" \
 "uart.obj" 
 
@@ -50,6 +54,7 @@ C_DEPS__QUOTED += \
 "dmm_00879_main.d" \
 "dmm_00879_processing.d" \
 "hal_pmm.d" \
+"lcd.d" \
 "timer.d" \
 "uart.d" 
 
@@ -58,6 +63,7 @@ C_SRCS__QUOTED += \
 "../dmm_00879_hw_setup.c" \
 "../dmm_00879_processing.c" \
 "../hal_pmm.c" \
+"../lcd.c" \
 "../timer.c" \
 "../uart.c" 
 

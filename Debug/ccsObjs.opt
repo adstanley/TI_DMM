@@ -3,6 +3,7 @@
 "./dmm_00879_main.obj"
 "./dmm_00879_processing.obj"
 "./hal_pmm.obj"
+"./lcd.obj"
 "./timer.obj"
 "./uart.obj"
 "../lnk_msp430f6736.cmd"

@@ -2,7 +2,7 @@
 #include "hal_pmm.h"
 #include "timer.h"
 
-void Clock_Init_16MHz_XT1(void) {
+void Clock_Init_16MHz(void) {
   // Assume WDT was stopped in main() or startup code.
 
   // Required for 16+ MHz
@@ -84,8 +84,6 @@ void Clock_Init_16MHz_XT1(void) {
   //         = 16.777216 MHz
   UCSCTL2 = FLLD__1 | (511);
 
-
-
   // --- 7. Select the FLL reference clock ---
   // UCSCTL3 controls:
   //   - SELREF: FLL reference source.
@@ -144,5 +142,58 @@ void Clock_Init_16MHz_XT1(void) {
   delay_ms(50);
   // delay_A1_ms(50);
 
+}
 
+
+void Clock_Init_25MHz(void)
+{
+    // 1) Raise Vcore for 25 MHz operation
+    SetVCore(PMMCOREV_3); 
+
+    // 2) Make sure REFO is available as FLL reference
+    //    (It is on by default, but this is explicit)
+    UCSCTL3 = SELREF__REFOCLK;      // FLL ref = REFO (32.768 kHz)
+
+    // 3) Optional: route ACLK from XT1 if your 32.768 kHz crystal is up
+    //    If XT1 is not stable yet, you can set ACLK = REFO instead.
+    UCSCTL4 = (UCSCTL4 & ~(SELA_7)) | SELA__XT1CLK;  // ACLK = XT1
+    // (SELS/SELM will be set after FLL config)
+
+    // 4) Configure DCO for ~25 MHz via FLL
+    __bis_SR_register(SCG0);        // Disable FLL control loop
+
+    UCSCTL0 = 0x0000;               // Lowest DCOx, MODx
+    UCSCTL1 = DCORSEL_6;            // DCO range that supports up to ~50 MHz
+                                    // (needed for 25 MHz operation)
+
+    // Fdco = (N + 1) * Fref
+    // Fref = 32768 Hz (REFO), we want Fdco ≈ 25 MHz:
+    // (N + 1) = 25,000,000 / 32,768 ≈ 763  → N = 762
+    UCSCTL2 = 762;                  // FLLN = 762, FLLD = /1 (default)
+
+    // FLL uses REFO as reference (already set in UCSCTL3)
+    // FLLREFDIV left at /1 (FLLREFDIV__1)
+
+    __bic_SR_register(SCG0);        // Re-enable FLL
+
+    // 5) Select clock sources and dividers
+    UCSCTL4 = (UCSCTL4 & ~(SELA_7 | SELS_7 | SELM_7))
+            | SELA__XT1CLK          // ACLK  = XT1 (32.768 kHz)
+            | SELS__DCOCLK          // SMCLK = DCO (~25 MHz)
+            | SELM__DCOCLK;         // MCLK  = DCO (~25 MHz)
+
+    UCSCTL5 = DIVA__1               // ACLK /1
+            | DIVS__1               // SMCLK /1
+            | DIVM__1;              // MCLK /1
+
+    // 6) Let DCO/FLL settle
+    // Worst case: 32 * 32 * f_MCLK / f_FLLREF
+    // 32 * 32 * 25 MHz / 32768 Hz ≈ 781,250 cycles
+    __delay_cycles(781250u);
+
+    // 7) Clear oscillator fault flags (XT1 + DCO)
+    do {
+        UCSCTL7 &= ~(XT1LFOFFG | DCOFFG);   // F6736 has XT1LFOFFG, no XT1HFOFFG
+        SFRIFG1 &= ~OFIFG;                 // Clear global osc fault
+    } while (SFRIFG1 & OFIFG);
 }

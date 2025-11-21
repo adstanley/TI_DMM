@@ -12,6 +12,7 @@
     P4.7 = LCD segment line
  */
 
+#include "dmm_00879_main.h"
 #define P4DIR_INIT                                  0x00
 #define P4SEL_INIT                                  0
 #define P4OUT_INIT                                  0
@@ -103,5 +104,8 @@
 #define LCDCPCTL2_INIT                              (0xC3)       // - Seg 39 LCD Workaround
 #define LCDCVCTL0_INIT                              (LCDCPEN)
 #define LCDCVCTL1_INIT                              (0)
+
+
+void update_display();
 
 #endif
