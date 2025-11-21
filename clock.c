@@ -6,7 +6,7 @@ void Clock_Init_16MHz_XT1(void) {
   // Assume WDT was stopped in main() or startup code.
 
   // Required for 16+ MHz
-  SetVCore(PMMCOREV_2); 
+  SetVCore(PMMCOREV_3); 
   
   // --- 1. Route XT1 crystal pins to the UCS ---
   // P5.0 = XIN, P5.1 = XOUT for the low-frequency crystal.

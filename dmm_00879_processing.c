@@ -116,19 +116,35 @@ __interrupt void sd24b_adc_interrupt(void) {
     OP2_32X = operand1;
     __delay_cycles(6);
     break;
-  case POWER: // Process Power mode
-    while ((SD24B_IFG_REG & SD24B_CURRENT_IFG_BIT) == 0) {
-      ;
-    }
-    operand1 = SD24BMEM0_32;
-    operand2 = SD24BMEM1_32;
+  // case POWER: // Process Power mode
+  //   while ((SD24B_IFG_REG & SD24B_CURRENT_IFG_BIT) == 0) {
+  //     ;
+  //   }
+  //   operand1 = SD24BMEM0_32;
+  //   operand2 = SD24BMEM1_32;
+  //   if ((operand1 > OVERFLOW_H) || (operand1 < OVERFLOW_L) ||
+  //       (operand2 > OVERFLOW_H) || (operand2 < OVERFLOW_L))
+  //     range_overflow = 8;
+  //   operand1 -= active_voltage_offset;
+  //   operand2 -= active_current_offset;
+  //   MACS32 = operand1;
+  //   OP2_32X = operand2;
+  //   __delay_cycles(6);
+  //   break;
+  case POWER:
+    operand1 = SD24BMEM0_32;    // Voltage sample
+    operand2 = SD24BMEM1_32;    // Current sample
+
     if ((operand1 > OVERFLOW_H) || (operand1 < OVERFLOW_L) ||
         (operand2 > OVERFLOW_H) || (operand2 < OVERFLOW_L))
-      range_overflow = 8;
+        range_overflow = 8;
+
     operand1 -= active_voltage_offset;
     operand2 -= active_current_offset;
+
     MACS32 = operand1;
     OP2_32X = operand2;
+
     __delay_cycles(6);
     break;
   default:

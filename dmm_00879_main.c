@@ -41,6 +41,7 @@
 #include <msp430f6736.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "dmm_00879_defines.h"
 #include "dmm_00879_hw_setup.h"
@@ -86,6 +87,8 @@ uint8_t calibrate = 0;
 uint8_t decimal_position = 4;
 uint8_t unit = 0;
 uint8_t power_mode_cal = 0;
+
+bool adc_enabled = true;
 
 const unsigned char LCD_Char_Map[] = {
     BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7,               // '0' or 'O'
@@ -139,7 +142,8 @@ int main(void) {
   }
   // == END BLOCKER*/
 
-  enable_disable_ADCs(DC_VOLTAGE);
+  // Enable ADC in Voltage Measurement Mode
+  //enable_disable_ADCs(DC_VOLTAGE);
   voltage_settings(dc_voltage_range);
   dc_a_coefficient = DC_A_COEFFICIENT;
   dc_b_coefficient = 1 - dc_a_coefficient;
@@ -148,27 +152,30 @@ int main(void) {
 
   temp = KEY_PORT_IN_REG & KEY1;
   if ((temp == 0) | (TEST_MODE == 1)) {
+    uart_print("Entering Test Mode\r\n");
     test_mode = 1;
     test_interface_power_up();
-    LCDM20 |= 0x0F;
+    // LCDM20 |= 0x0F;
   }
 
   temp = KEY_PORT_IN_REG & KEY2;
   if (temp == 0) {
+    //uart_print("Entering Calibration Mode\r\n");
     test_mode = 1;
-    LCDM20 |= 0x0F;
+    // LCDM20 |= 0x0F;
     test_interface_power_up();
     calibrate = 1;
     active_gain = 1;
     active_voltage_offset = 0;
     active_current_offset = 0;
-    LCDM20 |= 0x30;
+    // LCDM20 |= 0x30;
   }
 
   KEY_IE_REG |= ALL_KEY_MASK;
 
   while (1) {
     if (calibrate == 0) {
+      //uart_print("Normal Measurement Mode\r\n");
       power_mode_cal = 0;
       dc_voltage_measurement_mode();
       ac_voltage_measurement_mode();
@@ -177,6 +184,7 @@ int main(void) {
       power_measurement_mode();
       off();
     } else {
+      //uart_print("Calibration Measurement Mode\r\n");
       power_mode_cal = 0;
       dc_voltage_measurement_mode();
       power_mode_cal = 1;
@@ -191,8 +199,15 @@ int main(void) {
 
 void dc_voltage_measurement_mode() {
   measurement_mode = DC_VOLTAGE;
-  enable_disable_ADCs(DC_VOLTAGE);
+  uart_print("\033[2J");  // clear screen
+  uart_print("\033[H");   // cursor to home (row 1, col 1)
+  uart_print("\r\nDC Voltage Measurement Mode\r\n");
+  if (adc_enabled == true) {
+    enable_disable_ADCs(DC_VOLTAGE);
+  }
   voltage_settings(dc_voltage_range);
+
+  static uint8_t ui_tick = 0;   // how many RTC ticks since last print
 
   while (1) {
     _BIS_SR(LPM0_bits);
@@ -202,7 +217,6 @@ void dc_voltage_measurement_mode() {
       Events &= ~SD24B_EVENT;
       if (sampling_completed == 1) {
         sampling_completed = 0;
-        update_display();
 
         if (test_mode == 1) {
           if (calibrate == 1)
@@ -211,6 +225,22 @@ void dc_voltage_measurement_mode() {
             send_sample(result_fp);
         }
       }
+    }
+
+    // --- New: handle periodic UI / UART updates on RTC_EVENT ---
+    if (Events & RTC_EVENT) {
+      __disable_interrupt();
+      Events &= ~RTC_EVENT;
+
+      // RTC ticks are ~6.4 ms in the TI example.
+      // 6.4 ms * 20 ≈ 128 ms → about 7.8 updates per second.
+      if (++ui_tick >= 20) {
+        ui_tick = 0;
+        uart_print("\rResult: ");
+        uart_print_int((int32_t)result_fp);
+        uart_print("       ");     // clear any leftover digits
+      }
+      __enable_interrupt();
     }
 
     // KEY 1 - MODE
@@ -244,7 +274,7 @@ void dc_voltage_measurement_mode() {
       }
 
       voltage_settings(dc_voltage_range);
-      update_display();
+      // update_display();
     } else {
       if (key_debounce == 0)
         KEY_IE_REG |= ALL_KEY_MASK;
@@ -254,7 +284,10 @@ void dc_voltage_measurement_mode() {
 
 void ac_voltage_measurement_mode(void) {
   measurement_mode = AC_VOLTAGE;
-  enable_disable_ADCs(AC_VOLTAGE);
+  uart_print("\033[2J");  // clear screen
+  uart_print("\033[H");   // cursor to home (row 1, col 1)
+  uart_print("\r\nAC Voltage Measurement Mode\r\n");
+  //enable_disable_ADCs(AC_VOLTAGE);
   voltage_settings(ac_voltage_range);
 
   while (1) {
@@ -265,7 +298,7 @@ void ac_voltage_measurement_mode(void) {
       Events &= ~SD24B_EVENT;
       if (sampling_completed == 1) {
         sampling_completed = 0;
-        update_display();
+        // update_display();
 
         if (test_mode == 1) {
           if (calibrate == 1)
@@ -275,11 +308,27 @@ void ac_voltage_measurement_mode(void) {
         }
       }
     }
+    
+    static uint8_t ui_tick = 0;   // how many RTC ticks since last print
+    // --- New: handle periodic UI / UART updates on RTC_EVENT ---
+    if (Events & RTC_EVENT) {
+      Events &= ~RTC_EVENT;
+
+      // RTC ticks are ~6.4 ms in the TI example.
+      // 6.4 ms * 20 ≈ 128 ms → about 7.8 updates per second.
+      if (++ui_tick >= 20) {
+        ui_tick = 0;
+
+        uart_print("\rResult: ");
+        uart_print_int((int32_t)result_fp);
+        uart_print("       ");     // clear any leftover digits
+      }
+    }
 
     ////// KEY1    ///////////////////   Return to main measurement mode loop
     else if ((Events & KEY1_EVENT) > 0) {
       Events &= ~KEY1_EVENT; // clear Event bit
-      update_display();
+      //update_display();
       return;
     }
     ////// KEY2 ///////////////////////////  SETS RANGE OF EACH MEASUREMENT MODE
@@ -305,7 +354,7 @@ void ac_voltage_measurement_mode(void) {
       }
 
       voltage_settings(ac_voltage_range);
-      update_display();
+      //update_display();
     } else {
       if (key_debounce == 0)
         KEY_IE_REG |= ALL_KEY_MASK;
@@ -315,7 +364,10 @@ void ac_voltage_measurement_mode(void) {
 
 void dc_current_measurement_mode() {
   measurement_mode = DC_CURRENT;
-  enable_disable_ADCs(DC_CURRENT);
+  uart_print("\033[2J");  // clear screen
+  uart_print("\033[H");   // cursor to home (row 1, col 1)
+  uart_print("\r\nDC Current Measurement Mode\r\n");
+  //enable_disable_ADCs(DC_CURRENT);
   current_settings(dc_current_range);
 
   while (1) {
@@ -326,7 +378,7 @@ void dc_current_measurement_mode() {
       Events &= ~SD24B_EVENT;
       if (sampling_completed == 1) {
         sampling_completed = 0;
-        update_display();
+        // update_display();
 
         if (test_mode == 1) {
           if (calibrate == 1)
@@ -337,10 +389,26 @@ void dc_current_measurement_mode() {
       }
     }
 
+    static uint8_t ui_tick = 0;   // how many RTC ticks since last print
+    // --- New: handle periodic UI / UART updates on RTC_EVENT ---
+    if (Events & RTC_EVENT) {
+      Events &= ~RTC_EVENT;
+
+      // RTC ticks are ~6.4 ms in the TI example.
+      // 6.4 ms * 20 ≈ 128 ms → about 7.8 updates per second.
+      if (++ui_tick >= 20) {
+        ui_tick = 0;
+
+        uart_print("\rResult: ");
+        uart_print_int((int32_t)result_fp);
+        uart_print("       ");     // clear any leftover digits
+      }
+    }
+
     ////// KEY1    ///////////////////   Return to main measurement mode loop
     else if ((Events & KEY1_EVENT) > 0) {
       Events &= ~KEY1_EVENT; // clear Event bit
-      update_display();
+      // update_display();
       return;
     }
     ////// KEY2 ///////////////////////////  SETS RANGE OF EACH MEASUREMENT MODE
@@ -360,7 +428,7 @@ void dc_current_measurement_mode() {
       }
 
       current_settings(dc_current_range);
-      update_display();
+      // update_display();
     } else {
       if (key_debounce == 0)
         KEY_IE_REG |= ALL_KEY_MASK;
@@ -370,7 +438,10 @@ void dc_current_measurement_mode() {
 
 void ac_current_measurement_mode(void) {
   measurement_mode = AC_CURRENT;
-  enable_disable_ADCs(AC_CURRENT);
+  uart_print("\033[2J");  // clear screen
+  uart_print("\033[H");   // cursor to home (row 1, col 1)
+  uart_print("\r\nAC Current Measurement Mode\r\n");
+  //enable_disable_ADCs(AC_CURRENT);
   current_settings(ac_current_range);
 
   while (1) {
@@ -381,7 +452,7 @@ void ac_current_measurement_mode(void) {
       Events &= ~SD24B_EVENT;
       if (sampling_completed == 1) {
         sampling_completed = 0;
-        update_display();
+        //update_display();
 
         if (test_mode == 1) {
           if (calibrate == 1)
@@ -392,10 +463,26 @@ void ac_current_measurement_mode(void) {
       }
     }
 
+    static uint8_t ui_tick = 0;   // how many RTC ticks since last print
+    // --- New: handle periodic UI / UART updates on RTC_EVENT ---
+    if (Events & RTC_EVENT) {
+      Events &= ~RTC_EVENT;
+
+      // RTC ticks are ~6.4 ms in the TI example.
+      // 6.4 ms * 20 ≈ 128 ms → about 7.8 updates per second.
+      if (++ui_tick >= 20) {
+        ui_tick = 0;
+
+        uart_print("\rResult: ");
+        uart_print_int((int32_t)result_fp);
+        uart_print("       ");     // clear any leftover digits
+      }
+    }
+
     ////// KEY1    ///////////////////   Return to main measurement mode loop
     else if ((Events & KEY1_EVENT) > 0) {
       Events &= ~KEY1_EVENT; // clear Event bit
-      update_display();
+      //update_display();
       return;
     }
     ////// KEY2 ///////////////////////////  SETS RANGE OF EACH MEASUREMENT MODE
@@ -415,7 +502,7 @@ void ac_current_measurement_mode(void) {
       }
 
       current_settings(ac_current_range);
-      update_display();
+      //update_display();
     } else {
       if (key_debounce == 0)
         KEY_IE_REG |= ALL_KEY_MASK;
@@ -425,7 +512,12 @@ void ac_current_measurement_mode(void) {
 
 void power_measurement_mode(void) {
   measurement_mode = POWER;
-  enable_disable_ADCs(POWER);
+  uart_print("\033[2J");  // clear screen
+  uart_print("\033[H");   // cursor to home (row 1, col 1)
+  uart_print("\r\nPower Measurement Mode\r\n");
+  if (adc_enabled) {
+    enable_disable_ADCs(POWER);
+  }
   power_settings(power_range);
 
   while (1) {
@@ -436,7 +528,7 @@ void power_measurement_mode(void) {
       Events &= ~SD24B_EVENT;
       if (sampling_completed == 1) {
         sampling_completed = 0;
-        update_display();
+        // update_display();
 
         if (test_mode == 1) {
           if (calibrate == 1)
@@ -447,10 +539,28 @@ void power_measurement_mode(void) {
       }
     }
 
+    static uint8_t ui_tick = 0;   // how many RTC ticks since last print
+    // --- New: handle periodic UI / UART updates on RTC_EVENT ---
+    if (Events & RTC_EVENT) {
+      Events &= ~RTC_EVENT;
+
+      // RTC ticks are ~6.4 ms in the TI example.
+      // 6.4 ms * 20 ≈ 128 ms → about 7.8 updates per second.
+      if (++ui_tick >= 20) {
+        ui_tick = 0;
+        // disable interrupts to prevent conflict with UART TX
+        __disable_interrupt();
+        uart_print("\rResult: ");
+        uart_print_int((int32_t)result_fp);
+        uart_print("       ");     // clear any leftover digits
+        __enable_interrupt();
+      }
+    }
+
     ////// KEY1    ///////////////////   Return to main measurement mode loop
     else if ((Events & KEY1_EVENT) > 0) {
       Events &= ~KEY1_EVENT; // clear Event bit
-      update_display();
+      //update_display();
       return;
     }
     ////// KEY2 ///////////////////////////  SETS RANGE OF EACH MEASUREMENT MODE
@@ -470,7 +580,7 @@ void power_measurement_mode(void) {
       }
 
       power_settings(power_range);
-      update_display();
+      //update_display();
     } else {
       if (key_debounce == 0)
         KEY_IE_REG |= ALL_KEY_MASK;
@@ -478,8 +588,9 @@ void power_measurement_mode(void) {
   }
 }
 
-void off() {
+void off_broke() {
   volatile static uint8_t stop = 0;
+  uart_print("\r\nPowering Down Measurement Mode\r\n");
 
   SD24BCTL0 &= ~SD24REFS; // disable reference
   VOLTAGE_RANGE_REG &=
@@ -488,7 +599,7 @@ void off() {
       ~CURRENT_RANGE_MASK; // set range bits = 0 to prevent power leakage path
   FRONT_END_EN_REG &= ~FRONT_END_EN_BIT;
   enable_disable_ADCs(OFF);
-  LCDCCTL0 &= ~LCDON;
+  //LCDCCTL0 &= ~LCDON;
 
   test_interface_power_down();
   P3DIR |= (BIT6 + BIT7);
@@ -522,6 +633,19 @@ void off() {
   Events &= ~KEY1_EVENT;
 
   LCDCCTL0 |= LCDON;
+}
+
+void off(void)
+{
+    measurement_mode = OFF;
+    uart_print("\033[2J");  // clear screen
+    uart_print("\033[H");   // cursor to home (row 1, col 1)
+    uart_print("\r\nOFF Mode (ADC halted)\r\n");
+    enable_disable_ADCs(OFF);
+    SD24BIE  = 0;
+    SD24BIFG = 0;
+
+    // just return immediately; main() can decide what mode to enter next
 }
 
 void enable_disable_ADCs(uint8_t i) {
@@ -573,6 +697,7 @@ void enable_disable_ADCs(uint8_t i) {
 void voltage_settings(uint8_t i) {
   switch (i) {
   case V_60mV:
+    uart_print("60mV Range Selected\033[K\r");
     VOLTAGE_RANGE_REG &= ~VOLTAGE_RANGE_LSB;
     VOLTAGE_RANGE_REG &= ~VOLTAGE_RANGE_MSB;
     active_voltage_offset = VOLTAGE_60mV_OFFSET;
@@ -581,6 +706,7 @@ void voltage_settings(uint8_t i) {
     unit = 1; // milli
     break;
   case V_600mV:
+    uart_print("600mV Range Selected\033[K\r");
     VOLTAGE_RANGE_REG &= ~VOLTAGE_RANGE_MSB;
     VOLTAGE_RANGE_REG |= VOLTAGE_RANGE_LSB;
     active_voltage_offset = VOLTAGE_600mV_OFFSET;
@@ -589,6 +715,7 @@ void voltage_settings(uint8_t i) {
     unit = 1; // milli
     break;
   case V_6V:
+    uart_print("6V Range Selected\033[K\r");
     VOLTAGE_RANGE_REG |= VOLTAGE_RANGE_MSB;
     VOLTAGE_RANGE_REG &= ~VOLTAGE_RANGE_LSB;
     active_voltage_offset = VOLTAGE_6V_OFFSET;
@@ -597,6 +724,7 @@ void voltage_settings(uint8_t i) {
     unit = 0; // none
     break;
   case V_60V:
+    uart_print("60V Range Selected\033[K\r");
     VOLTAGE_RANGE_REG |= VOLTAGE_RANGE_MSB;
     VOLTAGE_RANGE_REG |= VOLTAGE_RANGE_LSB;
     active_voltage_offset = VOLTAGE_60V_OFFSET;
@@ -614,6 +742,7 @@ void voltage_settings(uint8_t i) {
 void current_settings(uint8_t i) {
   switch (i) {
   case I_600uA:
+    uart_print("600uA Range Selected\033[K\r");
     CURRENT_RANGE_REG |= CURRENT_RANGE_LSB;
     active_current_offset = CURRENT_600uA_OFFSET;
     active_gain = CURRENT_600uA_GAIN;
@@ -621,6 +750,7 @@ void current_settings(uint8_t i) {
     unit = 2; // micro
     break;
   case I_60mA:
+    uart_print("60mA Range Selected\033[K\r");
     CURRENT_RANGE_REG &= ~CURRENT_RANGE_LSB;
     active_current_offset = CURRENT_60mA_OFFSET;
     active_gain = CURRENT_60mA_GAIN;
@@ -637,6 +767,7 @@ void current_settings(uint8_t i) {
 void power_settings(uint8_t i) {
   switch (i) {
   case P_3600uW:
+    uart_print("3600uW Range Selected\033[K\r");
     VOLTAGE_RANGE_REG |= VOLTAGE_RANGE_MSB;
     VOLTAGE_RANGE_REG &= ~VOLTAGE_RANGE_LSB;
     CURRENT_RANGE_REG |= CURRENT_RANGE_LSB;
@@ -647,6 +778,7 @@ void power_settings(uint8_t i) {
     unit = 2; // micro
     break;
   case P_3600mW:
+    uart_print("3600mW Range Selected\033[K\r");
     VOLTAGE_RANGE_REG |= VOLTAGE_RANGE_MSB;
     VOLTAGE_RANGE_REG |= VOLTAGE_RANGE_LSB;
     CURRENT_RANGE_REG &= ~CURRENT_RANGE_LSB;
@@ -746,127 +878,127 @@ void set_display_result_factor() {
   }
 }
 
-void update_display() {
+// void update_display() {
 
-  LCDM1 = 0;  // main line, digit 6 number
-  LCDM2 = 0;  // main line, digit 6 starburst + sign
-  LCDM3 = 0;  // main line, digit 5 number
-  LCDM4 = 0;  // main line, digit 5 starburst + decimal point
-  LCDM5 = 0;  // main line, digit 4 number
-  LCDM6 = 0;  // main line, digit 4 starburst + decimal point
-  LCDM7 = 0;  // main line, digit 3 number
-  LCDM8 = 0;  // main line, digit 3 starburst + decimal point
-  LCDM9 = 0;  // main line, digit 2 number
-  LCDM10 = 0; // main line, digit 2 starburst + decimal point
+//   LCDM1 = 0;  // main line, digit 6 number
+//   LCDM2 = 0;  // main line, digit 6 starburst + sign
+//   LCDM3 = 0;  // main line, digit 5 number
+//   LCDM4 = 0;  // main line, digit 5 starburst + decimal point
+//   LCDM5 = 0;  // main line, digit 4 number
+//   LCDM6 = 0;  // main line, digit 4 starburst + decimal point
+//   LCDM7 = 0;  // main line, digit 3 number
+//   LCDM8 = 0;  // main line, digit 3 starburst + decimal point
+//   LCDM9 = 0;  // main line, digit 2 number
+//   LCDM10 = 0; // main line, digit 2 starburst + decimal point
 
-  switch (measurement_mode) {
-  case DC_VOLTAGE:
-    if (calibrate == 0) {
-      LCDM14 = 0xC7;
-      LCDM16 = 0xC9;
-      LCDM17 = 0xCF;
-    } else {
-      if (power_mode_cal == 0) {
-        LCDM14 = 0xC7;
-        LCDM16 = 0x00;
-        LCDM17 = 0xC9;
-      } else {
-        LCDM14 = 0xC7;
-        LCDM16 = 0xEC;
-        LCDM17 = 0xC9;
-      }
-    }
-    break;
-  case AC_VOLTAGE:
-    LCDM14 = 0xC7;
-    LCDM16 = 0xC9;
-    LCDM17 = 0xEE;
-    break;
-  case DC_CURRENT:
-    if (calibrate == 0) {
-      LCDM14 = 0xEE;
-      LCDM16 = 0xC9;
-      LCDM17 = 0xCF;
-    } else {
-      if (power_mode_cal == 0) {
-        LCDM14 = 0xEE;
-        LCDM16 = 0x00;
-        LCDM17 = 0xC9;
-      } else {
-        LCDM14 = 0xEE;
-        LCDM16 = 0xEC;
-        LCDM17 = 0xC9;
-      }
-    }
-    break;
-  case AC_CURRENT:
-    LCDM14 = 0xEE;
-    LCDM16 = 0xC9;
-    LCDM17 = 0xEE;
-    break;
-  case POWER:
-    LCDM14 = 0xEC;
-    LCDM16 = 0;
-    LCDM17 = 0;
-    break;
-  default:
-    break;
-  }
+//   switch (measurement_mode) {
+//   case DC_VOLTAGE:
+//     if (calibrate == 0) {
+//       LCDM14 = 0xC7;
+//       LCDM16 = 0xC9;
+//       LCDM17 = 0xCF;
+//     } else {
+//       if (power_mode_cal == 0) {
+//         LCDM14 = 0xC7;
+//         LCDM16 = 0x00;
+//         LCDM17 = 0xC9;
+//       } else {
+//         LCDM14 = 0xC7;
+//         LCDM16 = 0xEC;
+//         LCDM17 = 0xC9;
+//       }
+//     }
+//     break;
+//   case AC_VOLTAGE:
+//     LCDM14 = 0xC7;
+//     LCDM16 = 0xC9;
+//     LCDM17 = 0xEE;
+//     break;
+//   case DC_CURRENT:
+//     if (calibrate == 0) {
+//       LCDM14 = 0xEE;
+//       LCDM16 = 0xC9;
+//       LCDM17 = 0xCF;
+//     } else {
+//       if (power_mode_cal == 0) {
+//         LCDM14 = 0xEE;
+//         LCDM16 = 0x00;
+//         LCDM17 = 0xC9;
+//       } else {
+//         LCDM14 = 0xEE;
+//         LCDM16 = 0xEC;
+//         LCDM17 = 0xC9;
+//       }
+//     }
+//     break;
+//   case AC_CURRENT:
+//     LCDM14 = 0xEE;
+//     LCDM16 = 0xC9;
+//     LCDM17 = 0xEE;
+//     break;
+//   case POWER:
+//     LCDM14 = 0xEC;
+//     LCDM16 = 0;
+//     LCDM17 = 0;
+//     break;
+//   default:
+//     break;
+//   }
 
-  switch (unit) {
-  case 0: // none
-    LCDM11 = 0x0;
-    LCDM12 = 0x0;
-    break;
-  case 1: // milli
-    LCDM11 = 0x44;
-    LCDM12 = 0xa0;
-    break;
-  case 2: // micro
-    LCDM11 = 0x47;
-    LCDM12 = 0x00;
-    break;
-  default:
-    break;
-  }
+//   switch (unit) {
+//   case 0: // none
+//     LCDM11 = 0x0;
+//     LCDM12 = 0x0;
+//     break;
+//   case 1: // milli
+//     LCDM11 = 0x44;
+//     LCDM12 = 0xa0;
+//     break;
+//   case 2: // micro
+//     LCDM11 = 0x47;
+//     LCDM12 = 0x00;
+//     break;
+//   default:
+//     break;
+//   }
 
-  switch (decimal_position) {
-  case 2:
-    LCDM8 |= 0x0001;
-    break;
-  case 3:
-    LCDM6 |= 0x0001;
-    break;
-  case 4:
-    LCDM4 |= 0x0001;
-    break;
-  case 5:
-    LCDM2 |= 0x0001;
-    break;
-  default:
-    break;
-  }
+//   switch (decimal_position) {
+//   case 2:
+//     LCDM8 |= 0x0001;
+//     break;
+//   case 3:
+//     LCDM6 |= 0x0001;
+//     break;
+//   case 4:
+//     LCDM4 |= 0x0001;
+//     break;
+//   case 5:
+//     LCDM2 |= 0x0001;
+//     break;
+//   default:
+//     break;
+//   }
 
-  display_value = (int32_t)(displayed_result_fp);
-  if (display_value < 0) {
-    LCDM2 |= 0x04;
-    display_value = ~display_value + 1;
-  }
+//   display_value = (int32_t)(displayed_result_fp);
+//   if (display_value < 0) {
+//     LCDM2 |= 0x04;
+//     display_value = ~display_value + 1;
+//   }
 
-  LCDM9 = LCD_Char_Map[display_value % 10];
+//   LCDM9 = LCD_Char_Map[display_value % 10];
 
-  display_value /= 10;
-  LCDM7 = LCD_Char_Map[display_value % 10];
+//   display_value /= 10;
+//   LCDM7 = LCD_Char_Map[display_value % 10];
 
-  display_value /= 10;
-  LCDM5 = LCD_Char_Map[display_value % 10];
+//   display_value /= 10;
+//   LCDM5 = LCD_Char_Map[display_value % 10];
 
-  display_value /= 10;
-  LCDM3 = LCD_Char_Map[display_value % 10];
+//   display_value /= 10;
+//   LCDM3 = LCD_Char_Map[display_value % 10];
 
-  display_value /= 10;
-  LCDM1 = LCD_Char_Map[display_value % 10];
-}
+//   display_value /= 10;
+//   LCDM1 = LCD_Char_Map[display_value % 10];
+// }
 
 // // Send a single character via UCA1
 // void uart_putc(char c) {
