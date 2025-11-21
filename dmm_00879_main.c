@@ -819,30 +819,6 @@ void test_interface_power_up() {
   P1OUT = P1OUT_INIT | BIT7;
 }
 
-void send_sample(float sample) {
-  static uint32_t sample_int;
-
-  sample_int = *((uint32_t *)&sample);
-
-  while ((UCA1STATW & UCBUSY) > 0); // header byte to sync byte boundary
-  UCA1TXBUF = 0xAA;
-
-  while ((UCA1STATW & UCBUSY) > 0);
-  UCA1TXBUF = 0x55; // header byte to sync byte boundary
-
-  while ((UCA1STATW & UCBUSY) > 0);
-  UCA1TXBUF = (uint8_t)(((uint32_t)sample_int >> 24) & 0xFF);
-
-  while ((UCA1STATW & UCBUSY) > 0);
-  UCA1TXBUF = (uint8_t)(((uint32_t)sample_int >> 16) & 0xFF);
-
-  while ((UCA1STATW & UCBUSY) > 0);
-  UCA1TXBUF = (uint8_t)(((uint32_t)sample_int >> 8) & 0xFF);
-
-  while ((UCA1STATW & UCBUSY) > 0);
-  UCA1TXBUF = (uint8_t)(((uint32_t)sample_int) & 0xFF);
-}
-
 void set_display_result_factor() {
   displayed_result_factor = 1;
 

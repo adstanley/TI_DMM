@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v21.6.1                     
 ******************************************************************************
->> Linked Fri Nov 21 09:44:11 2025
+>> Linked Fri Nov 21 13:36:58 2025
 
 OUTPUT FILE NAME:   <DMM.out>
-ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 00004576
+ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 000045a6
 
 
 MEMORY CONFIGURATION
@@ -18,8 +18,8 @@ MEMORY CONFIGURATION
   INFOC                 00001880   00000080  00000000  00000080  RWIX
   INFOB                 00001900   00000080  00000000  00000080  RWIX
   INFOA                 00001980   00000080  00000000  00000080  RWIX
-  RAM                   00001c00   00002000  000000b7  00001f49  RWIX
-  FLASH                 00004000   0000bf80  0000095a  0000b626  RWIX
+  RAM                   00001c00   00002000  000001bf  00001e41  RWIX
+  FLASH                 00004000   0000bf80  0000098a  0000b5f6  RWIX
   INT00                 0000ff80   00000002  00000000  00000002  RWIX
   INT01                 0000ff82   00000002  00000000  00000002  RWIX
   INT02                 0000ff84   00000002  00000000  00000002  RWIX
@@ -92,56 +92,59 @@ SECTION ALLOCATION MAP
  output                                  attributes/
 section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
-.data      0    00001c00    0000003c     UNINITIALIZED
-                  00001c00    0000002b     dmm_00879_main.obj (.data)
-                  00001c2b    00000001     --HOLE--
-                  00001c2c    0000000d     dmm_00879_processing.obj (.data)
-                  00001c39    00000001     --HOLE--
-                  00001c3a    00000002     timer.obj (.data)
+.bss       0    00001c00    0000012b     UNINITIALIZED
+                  00001c00    00000100     uart.obj (.bss:tx_buf)
+                  00001d00    00000008     (.common:ac_acc_sampled_value)
+                  00001d08    00000004     (.common:active_current_offset)
+                  00001d0c    00000004     (.common:calibration_value_fp)
+                  00001d10    00000004     (.common:dc_acc_sampled_value)
+                  00001d14    00000004     (.common:displayed_result_factor)
+                  00001d18    00000004     (.common:displayed_result_fp)
+                  00001d1c    00000004     (.common:operand1)
+                  00001d20    00000004     (.common:operand2)
+                  00001d24    00000004     (.common:result_fp)
+                  00001d28    00000001     (.common:Events)
+                  00001d29    00000001     (.common:key_debounce)
+                  00001d2a    00000001     (.common:sampling_completed)
 
-.bss       0    00001c3c    0000002b     UNINITIALIZED
-                  00001c3c    00000008     (.common:ac_acc_sampled_value)
-                  00001c44    00000004     (.common:active_current_offset)
-                  00001c48    00000004     (.common:calibration_value_fp)
-                  00001c4c    00000004     (.common:dc_acc_sampled_value)
-                  00001c50    00000004     (.common:displayed_result_factor)
-                  00001c54    00000004     (.common:displayed_result_fp)
-                  00001c58    00000004     (.common:operand1)
-                  00001c5c    00000004     (.common:operand2)
-                  00001c60    00000004     (.common:result_fp)
-                  00001c64    00000001     (.common:Events)
-                  00001c65    00000001     (.common:key_debounce)
-                  00001c66    00000001     (.common:sampling_completed)
+.data      0    00001d2c    00000044     UNINITIALIZED
+                  00001d2c    0000002b     dmm_00879_main.obj (.data)
+                  00001d57    00000001     --HOLE--
+                  00001d58    0000000d     dmm_00879_processing.obj (.data)
+                  00001d65    00000001     --HOLE--
+                  00001d66    00000008     uart.obj (.data)
+                  00001d6e    00000002     timer.obj (.data)
 
 .stack     0    00003bb0    00000050     UNINITIALIZED
                   00003bb0    00000004     rts430x_lc_rd_eabi.lib : boot.c.obj (.stack)
                   00003bb4    0000004c     --HOLE--
 
 .text:_isr 
-*          0    00004000    0000059c     
+*          0    00004000    000005cc     
                   00004000    000004a0     dmm_00879_processing.obj (.text:_isr:sd24b_adc_interrupt)
                   000044a0    00000068     dmm_00879_processing.obj (.text:_isr:port2_interrupt)
                   00004508    0000004c     dmm_00879_processing.obj (.text:_isr:wdt_interrupt)
-                  00004554    00000022     timer.obj (.text:_isr:TIMER0_A0_ISR)
-                  00004576    0000001c     rts430x_lc_rd_eabi.lib : boot.c.obj (.text:_isr:_c_int00_noargs)
-                  00004592    00000008                            : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
-                  0000459a    00000002     dmm_00879_processing.obj (.text:_isr:adc10_interrupt)
+                  00004554    00000030     uart.obj (.text:_isr:USCI_A1_ISR)
+                  00004584    00000022     timer.obj (.text:_isr:TIMER0_A0_ISR)
+                  000045a6    0000001c     rts430x_lc_rd_eabi.lib : boot.c.obj (.text:_isr:_c_int00_noargs)
+                  000045c2    00000008                            : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
+                  000045ca    00000002     dmm_00879_processing.obj (.text:_isr:adc10_interrupt)
 
-.cinit     0    00004916    00000044     
-                  00004916    00000021     (.cinit..data.load) [load image, compression = lzss]
-                  00004937    00000001     --HOLE-- [fill = 0]
-                  00004938    0000000c     (__TI_handler_table)
-                  00004944    00000006     (.cinit..bss.load) [load image, compression = zero_init]
-                  0000494a    00000010     (__TI_cinit_table)
+.cinit     0    00004946    00000044     
+                  00004946    00000021     (.cinit..data.load) [load image, compression = lzss]
+                  00004967    00000001     --HOLE-- [fill = 0]
+                  00004968    0000000c     (__TI_handler_table)
+                  00004974    00000006     (.cinit..bss.load) [load image, compression = zero_init]
+                  0000497a    00000010     (__TI_cinit_table)
 
 .binit     0    00004000    00000000     
 
 .init_array 
 *          0    00004000    00000000     UNINITIALIZED
 
-.const     0    0000459c    0000037a     
-                  0000459c    000002ba     dmm_00879_main.obj (.const:.string)
-                  00004856    000000c0     MSPMATHLIB_CCS_msp430_5xx_6xx_FRxx_large_code_restricted_data.lib : msp430_tables.o (.const:msp430_sqrt_lookup)
+.const     0    000045cc    0000037a     
+                  000045cc    000002ba     dmm_00879_main.obj (.const:.string)
+                  00004886    000000c0     MSPMATHLIB_CCS_msp430_5xx_6xx_FRxx_large_code_restricted_data.lib : msp430_tables.o (.const:msp430_sqrt_lookup)
 
 RTC        0    0000ffd0    00000002     
                   0000ffd0    00000002     rts430x_lc_rd_eabi.lib : int40.asm.obj (.int40)
@@ -189,7 +192,7 @@ USCI_A2    0    0000ffe8    00000002
                   0000ffe8    00000002     rts430x_lc_rd_eabi.lib : int52.asm.obj (.int52)
 
 USCI_A1    0    0000ffea    00000002     
-                  0000ffea    00000002     rts430x_lc_rd_eabi.lib : int53.asm.obj (.int53)
+                  0000ffea    00000002     uart.obj (.int53)
 
 TIMER0_A1 
 *          0    0000ffec    00000002     
@@ -246,7 +249,7 @@ SYSNMI     0    0000fffc    00000002
                   000110f8    0000007e     rts430x_lc_rd_eabi.lib : fs_tol.asm.obj (.text)
                   00011176    0000007c     clock.obj (.text:Clock_Init_16MHz)
                   000111f2    00000076     rts430x_lc_rd_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
-                  00011268    00000068     dmm_00879_main.obj (.text:send_sample)
+                  00011268    00000068     uart.obj (.text:send_sample)
                   000112d0    00000064     dmm_00879_main.obj (.text:current_settings)
                   00011334    00000058     rts430x_lc_rd_eabi.lib : div32u.asm.obj (.text)
                   0001138c    00000054                            : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
@@ -278,15 +281,15 @@ MODULE SUMMARY
        Module                       code   ro data   rw data
        ------                       ----   -------   -------
     .\
-       dmm_00879_main.obj           2526   698       66     
+       dmm_00879_main.obj           2422   698       66     
        dmm_00879_processing.obj     1366   8         33     
+       uart.obj                     376    2         264    
        hal_pmm.obj                  434    0         0      
        dmm_00879_hw_setup.obj       354    0         0      
-       uart.obj                     224    0         0      
        clock.obj                    124    0         0      
        timer.obj                    70     2         2      
     +--+----------------------------+------+---------+---------+
-       Total:                       5098   708       101    
+       Total:                       5146   710       365    
                                                             
     C:\ti\ccs2031\ccs\ccs_base\msp430\lib\5xx_6xx_FRxx\MSPMATHLIB_CCS_msp430_5xx_6xx_FRxx_large_code_restricted_data.lib
        msp430_sqrt.o                312    0         0      
@@ -327,7 +330,6 @@ MODULE SUMMARY
        int50.asm.obj                0      2         0      
        int51.asm.obj                0      2         0      
        int52.asm.obj                0      2         0      
-       int53.asm.obj                0      2         0      
        int54.asm.obj                0      2         0      
        int58.asm.obj                0      2         0      
        int59.asm.obj                0      2         0      
@@ -335,24 +337,24 @@ MODULE SUMMARY
        int62.asm.obj                0      2         0      
        startup.c.obj                2      0         0      
     +--+----------------------------+------+---------+---------+
-       Total:                       1606   38        0      
+       Total:                       1606   36        0      
                                                             
        Stack:                       0      0         80     
        Linker Generated:            0      67        0      
     +--+----------------------------+------+---------+---------+
-       Grand Total:                 7220   1005      181    
+       Grand Total:                 7268   1005      445    
 
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 0000494a records: 2, size/record: 8, table size: 16
-	.data: load addr=00004916, load size=00000021 bytes, run addr=00001c00, run size=0000003c bytes, compression=lzss
-	.bss: load addr=00004944, load size=00000006 bytes, run addr=00001c3c, run size=0000002b bytes, compression=zero_init
+__TI_cinit_table @ 0000497a records: 2, size/record: 8, table size: 16
+	.data: load addr=00004946, load size=00000021 bytes, run addr=00001d2c, run size=00000044 bytes, compression=lzss
+	.bss: load addr=00004974, load size=00000006 bytes, run addr=00001c00, run size=0000012b bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 00004938 records: 3, size/record: 4, table size: 12
+__TI_handler_table @ 00004968 records: 3, size/record: 4, table size: 12
 	index: 0, handler: __TI_zero_init
 	index: 1, handler: __TI_decompress_lzss
 	index: 2, handler: __TI_decompress_none
@@ -477,7 +479,7 @@ address   name
 00000506  DMACTL3                                
 00000508  DMACTL4                                
 0000050e  DMAIV                                  
-00001c64  Events                                 
+00001d28  Events                                 
 00000140  FCTL1                                  
 00000141  FCTL1_H                                
 00000140  FCTL1_L                                
@@ -1023,7 +1025,7 @@ address   name
 00000460  TA3EX0                                 
 0000046e  TA3IV                                  
 00000450  TA3R                                   
-00004554  TIMER0_A0_ISR                          
+00004584  TIMER0_A0_ISR                          
 000005d0  UCA0ABCTL                              
 000005c6  UCA0BRW                                
 000005c7  UCA0BRW_H                              
@@ -1190,6 +1192,7 @@ address   name
 00000170  UCSCTL8                                
 00000171  UCSCTL8_H                              
 00000170  UCSCTL8_L                              
+00004554  USCI_A1_ISR                            
 0000015c  WDTCTL                                 
 0000015d  WDTCTL_H                               
 0000015c  WDTCTL_L                               
@@ -1197,12 +1200,12 @@ address   name
 00011676  WDT_Enable                             
 00003c00  __STACK_END                            
 00000050  __STACK_SIZE                           
-0000494a  __TI_CINIT_Base                        
-0000495a  __TI_CINIT_Limit                       
-0000495a  __TI_CINIT_Warm                        
-00004938  __TI_Handler_Table_Base                
-00004944  __TI_Handler_Table_Limit               
-00004592  __TI_ISR_TRAP                          
+0000497a  __TI_CINIT_Base                        
+0000498a  __TI_CINIT_Limit                       
+0000498a  __TI_CINIT_Warm                        
+00004968  __TI_Handler_Table_Base                
+00004974  __TI_Handler_Table_Limit               
+000045c2  __TI_ISR_TRAP                          
 0001138c  __TI_auto_init_nobinit_nopinit_hold_wdt
 000111f2  __TI_decompress_lzss                   
 0001162a  __TI_decompress_none                   
@@ -1262,61 +1265,61 @@ ffffffff  __c_args__
 0001146a  __mspabi_srall                         
 00011528  __mspabi_srlll                         
 0001029a  __mspabi_subf                          
-00004576  _c_int00_noargs                        
+000045a6  _c_int00_noargs                        
 0000fffe  _reset_vector                          
 00003bb0  _stack                                 
 00011696  _system_post_cinit                     
 00011692  _system_pre_init                       
 0001168c  abort                                  
-00001c0e  ac_a_coefficient                       
-00001c3c  ac_acc_sampled_value                   
-00001c12  ac_b_coefficient                       
+00001d3a  ac_a_coefficient                       
+00001d00  ac_acc_sampled_value                   
+00001d3e  ac_b_coefficient                       
 000109d8  ac_current_measurement_mode            
-00001c1d  ac_current_range                       
+00001d49  ac_current_range                       
 000107f8  ac_voltage_measurement_mode            
-00001c1c  ac_voltage_range                       
-00001c44  active_current_offset                  
-00001c16  active_gain                            
-00001c02  active_voltage_offset                  
-0000459a  adc10_interrupt                        
-00001c24  adc_enabled                            
-00001c20  calibrate                              
-00001c48  calibration_value_fp                   
+00001d48  ac_voltage_range                       
+00001d08  active_current_offset                  
+00001d42  active_gain                            
+00001d2e  active_voltage_offset                  
+000045ca  adc10_interrupt                        
+00001d50  adc_enabled                            
+00001d4c  calibrate                              
+00001d0c  calibration_value_fp                   
 000112d0  current_settings                       
-00001c06  dc_a_coefficient                       
-00001c4c  dc_acc_sampled_value                   
-00001c0a  dc_b_coefficient                       
+00001d32  dc_a_coefficient                       
+00001d10  dc_acc_sampled_value                   
+00001d36  dc_b_coefficient                       
 000108f2  dc_current_measurement_mode            
-00001c1b  dc_current_range                       
+00001d47  dc_current_range                       
 000104ea  dc_voltage_measurement_mode            
-00001c1a  dc_voltage_range                       
-00001c21  decimal_position                       
+00001d46  dc_voltage_range                       
+00001d4d  decimal_position                       
 000115de  delay_ms                               
-00001c3a  delay_remaining                        
-00001c50  displayed_result_factor                
-00001c54  displayed_result_fp                    
+00001d6e  delay_remaining                        
+00001d14  displayed_result_factor                
+00001d18  displayed_result_fp                    
 00010ff0  enable_disable_ADCs                    
-00001c65  key_debounce                           
-00001c30  last_sampled_value_fp                  
+00001d29  key_debounce                           
+00001d5c  last_sampled_value_fp                  
 000103cc  main                                   
-00001c00  measurement_mode                       
+00001d2c  measurement_mode                       
 00011602  memcpy                                 
 00010d32  msp430_calc_sqrt                       
-00004856  msp430_sqrt_lookup                     
+00004886  msp430_sqrt_lookup                     
 00011562  off                                    
-00001c58  operand1                               
-00001c5c  operand2                               
+00001d1c  operand1                               
+00001d20  operand2                               
 000044a0  port2_interrupt                        
 000106fa  power_measurement_mode                 
-00001c23  power_mode_cal                         
-00001c1e  power_range                            
+00001d4f  power_mode_cal                         
+00001d4a  power_range                            
 00011076  power_settings                         
-00001c38  range_overflow                         
-00001c60  result_fp                              
-00001c2c  sample_count                           
-00001c2e  sample_count2                          
-00001c34  sampled_value_fp                       
-00001c66  sampling_completed                     
+00001d64  range_overflow                         
+00001d24  result_fp                              
+00001d58  sample_count                           
+00001d5a  sample_count2                          
+00001d60  sampled_value_fp                       
+00001d2a  sampling_completed                     
 00004000  sd24b_adc_interrupt                    
 00011268  send_sample                            
 00010abc  set_display_result_factor              
@@ -1324,12 +1327,12 @@ ffffffff  __c_args__
 00010000  system_setup                           
 0001164e  test_interface_power_down              
 00011616  test_interface_power_up                
-00001c1f  test_mode                              
+00001d4b  test_mode                              
 00011592  uart_init_115200                       
 0001163c  uart_print                             
 00010f58  uart_print_int                         
 0001165c  uart_putc                              
-00001c22  unit                                   
+00001d4e  unit                                   
 00010b90  voltage_settings                       
 00004508  wdt_interrupt                          
 
@@ -2163,57 +2166,58 @@ address   name
 00000a51  LCDBM18                                
 00000a52  LCDBM19                                
 00000a53  LCDBM20                                
-00001c00  measurement_mode                       
-00001c02  active_voltage_offset                  
-00001c06  dc_a_coefficient                       
-00001c0a  dc_b_coefficient                       
-00001c0e  ac_a_coefficient                       
-00001c12  ac_b_coefficient                       
-00001c16  active_gain                            
-00001c1a  dc_voltage_range                       
-00001c1b  dc_current_range                       
-00001c1c  ac_voltage_range                       
-00001c1d  ac_current_range                       
-00001c1e  power_range                            
-00001c1f  test_mode                              
-00001c20  calibrate                              
-00001c21  decimal_position                       
-00001c22  unit                                   
-00001c23  power_mode_cal                         
-00001c24  adc_enabled                            
-00001c2c  sample_count                           
-00001c2e  sample_count2                          
-00001c30  last_sampled_value_fp                  
-00001c34  sampled_value_fp                       
-00001c38  range_overflow                         
-00001c3a  delay_remaining                        
-00001c3c  ac_acc_sampled_value                   
-00001c44  active_current_offset                  
-00001c48  calibration_value_fp                   
-00001c4c  dc_acc_sampled_value                   
-00001c50  displayed_result_factor                
-00001c54  displayed_result_fp                    
-00001c58  operand1                               
-00001c5c  operand2                               
-00001c60  result_fp                              
-00001c64  Events                                 
-00001c65  key_debounce                           
-00001c66  sampling_completed                     
+00001d00  ac_acc_sampled_value                   
+00001d08  active_current_offset                  
+00001d0c  calibration_value_fp                   
+00001d10  dc_acc_sampled_value                   
+00001d14  displayed_result_factor                
+00001d18  displayed_result_fp                    
+00001d1c  operand1                               
+00001d20  operand2                               
+00001d24  result_fp                              
+00001d28  Events                                 
+00001d29  key_debounce                           
+00001d2a  sampling_completed                     
+00001d2c  measurement_mode                       
+00001d2e  active_voltage_offset                  
+00001d32  dc_a_coefficient                       
+00001d36  dc_b_coefficient                       
+00001d3a  ac_a_coefficient                       
+00001d3e  ac_b_coefficient                       
+00001d42  active_gain                            
+00001d46  dc_voltage_range                       
+00001d47  dc_current_range                       
+00001d48  ac_voltage_range                       
+00001d49  ac_current_range                       
+00001d4a  power_range                            
+00001d4b  test_mode                              
+00001d4c  calibrate                              
+00001d4d  decimal_position                       
+00001d4e  unit                                   
+00001d4f  power_mode_cal                         
+00001d50  adc_enabled                            
+00001d58  sample_count                           
+00001d5a  sample_count2                          
+00001d5c  last_sampled_value_fp                  
+00001d60  sampled_value_fp                       
+00001d64  range_overflow                         
+00001d6e  delay_remaining                        
 00003bb0  _stack                                 
 00003c00  __STACK_END                            
 00004000  sd24b_adc_interrupt                    
 000044a0  port2_interrupt                        
 00004508  wdt_interrupt                          
-00004554  TIMER0_A0_ISR                          
-00004576  _c_int00_noargs                        
-00004592  __TI_ISR_TRAP                          
-0000459a  adc10_interrupt                        
-00004856  msp430_sqrt_lookup                     
-00004938  __TI_Handler_Table_Base                
-00004944  __TI_Handler_Table_Limit               
-0000494a  __TI_CINIT_Base                        
-0000495a  __TI_CINIT_Limit                       
-0000495a  __TI_CINIT_Warm                        
+00004554  USCI_A1_ISR                            
+00004584  TIMER0_A0_ISR                          
+000045a6  _c_int00_noargs                        
+000045c2  __TI_ISR_TRAP                          
+000045ca  adc10_interrupt                        
+00004886  msp430_sqrt_lookup                     
+00004968  __TI_Handler_Table_Base                
+00004974  __TI_Handler_Table_Limit               
+0000497a  __TI_CINIT_Base                        
+0000498a  __TI_CINIT_Limit                       
+0000498a  __TI_CINIT_Warm                        
 0000ffd0  __TI_int40                             
 0000ffd2  __TI_int41                             
 0000ffd4  __TI_int42                             
@@ -2309,4 +2313,4 @@ ffffffff  __TI_prof_data_size
 ffffffff  __TI_prof_data_start                   
 ffffffff  __c_args__                             
 
-[970 symbols]
+[971 symbols]

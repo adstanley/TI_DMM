@@ -9,5 +9,7 @@ void uart_putc(char c);
 void uart_print(const char *str);
 void uart_print_int(int32_t num);
 void uart_println(void);
+void send_sample(float sample);
+void send_sample_binary(float sample);
 
 #endif
