@@ -109,8 +109,6 @@ void Clock_Init_16MHz(void) {
   // the target frequency set by UCSCTL1/2 and the REFO reference.
   __bic_SR_register(SCG0); // Clear SCG0 → FLL control loop enabled again.
 
-
-
   // --- 8. Select clock sources and dividers for ACLK, SMCLK, MCLK ---
   // UCSCTL4 selects the clock *sources*:
   //   - SELA__XT1CLK  → ACLK = XT1 (external 32.768 kHz crystal).
@@ -128,8 +126,6 @@ void Clock_Init_16MHz(void) {
             | DIVS__1  // SMCLK divider = /1
             | DIVM__1; // MCLK divider  = /1
 
-
-
   // --- 9. Allow time for DCO to settle / FLL to converge ---
   // Even after re-enabling the FLL, it takes some time (many cycles)
   // for the DCO to "walk" to the target frequency.
@@ -138,8 +134,8 @@ void Clock_Init_16MHz(void) {
   //
   // At 16 MHz, 500000 cycles ≈ 31.25 ms.
   // During ramp-up it might be slightly different, but this is a safe wait.
-  // __delay_cycles(500000); // ~30 ms at ~16 MHz
-  delay_ms(50);
+  __delay_cycles(500000); // ~30 ms at ~16 MHz
+  // delay_ms(50);
   // delay_A1_ms(50);
 
 }

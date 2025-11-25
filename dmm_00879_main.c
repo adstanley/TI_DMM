@@ -88,31 +88,13 @@ uint8_t decimal_position = 4;
 uint8_t unit = 0;
 uint8_t power_mode_cal = 0;
 
-bool adc_enabled = true;
+static const bool adc_enabled = true;
 
-const unsigned char LCD_Char_Map[] = {
-    BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7,               // '0' or 'O'
-    BIT5 | BIT6,                                           // '1' or 'I'
-    BIT0 | BIT1 | BIT3 | BIT4 | BIT6 | BIT7,               // '2' or 'Z'
-    BIT0 | BIT1 | BIT4 | BIT5 | BIT6 | BIT7,               // '3'
-    BIT0 | BIT1 | BIT2 | BIT5 | BIT6,                      // '4' or 'y'
-    BIT0 | BIT1 | BIT2 | BIT4 | BIT5 | BIT7,               // '5' or 'S'
-    BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7,        // '6' or 'b'
-    BIT5 | BIT6 | BIT7,                                    // '7'
-    BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7, // '8' or 'B'
-    BIT0 | BIT1 | BIT2 | BIT4 | BIT5 | BIT6 | BIT7,        // '9' or 'g'
-};
 
-int __low_level_init(void) // low level init function
-{
-  WDTCTL = WDTPW + WDTHOLD; // Stop WDT
-  return 1;
-}
 
 int main(void) {
-  //
-  static uint8_t temp;
 
+  static uint8_t temp;
   __low_level_init();
 
   // Hardware Setup

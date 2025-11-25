@@ -6,6 +6,19 @@
 // Breaks build because variables are defined in main, comment out for now
 // Wont use it anyway
 
+// const unsigned char LCD_Char_Map[] = {
+//     BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7,               // '0' or 'O'
+//     BIT5 | BIT6,                                           // '1' or 'I'
+//     BIT0 | BIT1 | BIT3 | BIT4 | BIT6 | BIT7,               // '2' or 'Z'
+//     BIT0 | BIT1 | BIT4 | BIT5 | BIT6 | BIT7,               // '3'
+//     BIT0 | BIT1 | BIT2 | BIT5 | BIT6,                      // '4' or 'y'
+//     BIT0 | BIT1 | BIT2 | BIT4 | BIT5 | BIT7,               // '5' or 'S'
+//     BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT7,        // '6' or 'b'
+//     BIT5 | BIT6 | BIT7,                                    // '7'
+//     BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5 | BIT6 | BIT7, // '8' or 'B'
+//     BIT0 | BIT1 | BIT2 | BIT4 | BIT5 | BIT6 | BIT7,        // '9' or 'g'
+// };
+
 // void update_display() {
 
 //   LCDM1 = 0;  // main line, digit 6 number
