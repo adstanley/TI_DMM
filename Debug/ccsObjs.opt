@@ -4,6 +4,7 @@
 "./lcd.obj"
 "./main.obj"
 "./pins.obj"
+"./printf.obj"
 "./timer.obj"
 "./uart.obj"
 "../lnk_msp430f6736.cmd"

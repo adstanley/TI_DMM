@@ -15,6 +15,7 @@ C_SRCS += \
 ../lcd.c \
 ../main.c \
 ../pins.c \
+../printf.c \
 ../timer.c \
 ../uart.c 
 
@@ -25,6 +26,7 @@ C_DEPS += \
 ./lcd.d \
 ./main.d \
 ./pins.d \
+./printf.d \
 ./timer.d \
 ./uart.d 
 
@@ -35,6 +37,7 @@ OBJS += \
 ./lcd.obj \
 ./main.obj \
 ./pins.obj \
+./printf.obj \
 ./timer.obj \
 ./uart.obj 
 
@@ -45,6 +48,7 @@ OBJS__QUOTED += \
 "lcd.obj" \
 "main.obj" \
 "pins.obj" \
+"printf.obj" \
 "timer.obj" \
 "uart.obj" 
 
@@ -55,6 +59,7 @@ C_DEPS__QUOTED += \
 "lcd.d" \
 "main.d" \
 "pins.d" \
+"printf.d" \
 "timer.d" \
 "uart.d" 
 
@@ -65,6 +70,7 @@ C_SRCS__QUOTED += \
 "../lcd.c" \
 "../main.c" \
 "../pins.c" \
+"../printf.c" \
 "../timer.c" \
 "../uart.c" 
 

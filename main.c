@@ -68,7 +68,7 @@ void uart_print_u32(uint32_t n, int base, int width, char pad) {
   }
 
   while (n > 0) {
-    int d = n % base;
+    unsigned int d = n % base;
     buf[i++] = (d < 10) ? (d + '0') : (d - 10 + 'A');
     n /= base;
   }
