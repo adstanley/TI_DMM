@@ -1,52 +1,62 @@
 [
    {
       "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
-      "command"   : "clang++ -I\"C:/ti/ccs2031/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
-      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/hal_pmm.c"
-   },
-   {
-      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
-      "command"   : "clang++ -I\"C:/ti/ccs2031/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
       "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/clock.c"
    },
    {
       "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
-      "command"   : "clang++ -I\"C:/ti/ccs2031/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
-      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/uart.c"
-   },
-   {
-      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
-      "command"   : "clang++ -I\"C:/ti/ccs2031/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
-      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/timer.c"
-   },
-   {
-      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
-      "command"   : "clang++ -I\"C:/ti/ccs2031/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
-      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/lcd.c"
-   },
-   {
-      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
-      "command"   : "clang++ -I\"C:/ti/ccs2031/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
-      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/pins.c"
-   },
-   {
-      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
-      "command"   : "clang++ -I\"C:/ti/ccs2031/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
-      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/main.c"
-   },
-   {
-      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
-      "command"   : "clang++ -I\"C:/ti/ccs2031/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
       "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/dmm_00879_hw_setup.c"
    },
    {
       "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
-      "command"   : "clang++ -I\"C:/ti/ccs2031/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/dmm_00879_main.c"
+   },
+   {
+      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/dmm_00879_processing.c"
+   },
+   {
+      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/globals.c"
+   },
+   {
+      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/hal_pmm.c"
+   },
+   {
+      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/lcd.c"
+   },
+   {
+      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/pins.c"
+   },
+   {
+      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
       "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/printf.c"
    },
    {
       "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
-      "command"   : "clang++ -I\"C:/ti/ccs2031/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
-      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/main_uart_test.c"
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/timer.c"
+   },
+   {
+      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/uart.c"
+   },
+   {
+      "directory" : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2040/ccs/ccs_base/msp430/include\" -I\"D:/OneDrive - University of Florida/TI_CCS/TI_DMM\" -I\"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include\" -D__MSP430F6736__ -xc",
+      "file"      : "D:/OneDrive - University of Florida/TI_CCS/TI_DMM/wdt.c"
    }
 ]

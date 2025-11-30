@@ -134,7 +134,7 @@ void Clock_Init_16MHz(void) {
   //
   // At 16 MHz, 500000 cycles ≈ 31.25 ms.
   // During ramp-up it might be slightly different, but this is a safe wait.
-  __delay_cycles(500000); // ~30 ms at ~16 MHz
+  _delay_cycles(500000); // ~30 ms at ~16 MHz
   // delay_ms(50);
   // delay_A1_ms(50);
 

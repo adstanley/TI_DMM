@@ -35,13 +35,20 @@
 //
 //--------------------------------------------------------------------------
 //
-#include "dmm_00879_defines.h"
-#include "dmm_00879_main.h"
+#pragma diag_suppress 1531 
+#pragma diag_suppress 1538
+
 #include <math.h>
 #include <msp430.h>
 #include <msp430f6736.h>
 #include <stdint.h>
 #include <stdlib.h>
+
+#include "dmm_00879_defines.h"
+#include "dmm_00879_main.h"
+#include "globals.h"
+#include "wdt.h"
+#include "uart.h"
 
 
 extern uint8_t key_debounce;
@@ -62,14 +69,15 @@ extern float dc_b_coefficient;
 extern float ac_a_coefficient;
 extern float ac_b_coefficient;
 
+
 uint16_t sample_count = 0;
-uint16_t sample_count2 = 0;
+// uint16_t sample_count2 = 0;
 int32_t operand1;
 int32_t operand2;
 int32_t dc_acc_sampled_value;
 int64_t acc_sampled_value;
 int64_t ac_acc_sampled_value;
-float last_sampled_value_fp = 0;
+extern float last_sampled_value_fp = 0;
 float sampled_value_fp = 0;
 uint8_t range_overflow = 0;
 
@@ -77,17 +85,22 @@ uint8_t range_overflow = 0;
   This is the main interrupt routine where the main signal processing is done
   ---------------------------------------------------------------------------*/
 
-#define SD24BMEM0_32 SD24BMEMH0
-#define SD24BMEM1_32 SD24BMEMH1
+#define SD24BMEM0_32 (*((int32_t *)&SD24BMEML0))
+#define SD24BMEM1_32 (*((int32_t *)&SD24BMEML1))
 
 #pragma vector = SD24B_VECTOR
 __interrupt void sd24b_adc_interrupt(void) {
+  //unsigned long temp_result;
   Events |= SD24B_EVENT; // set SD24B ADC Event bit
   sample_count++;
 
   switch (measurement_mode) {
   case DC_VOLTAGE: // Process DC Voltage mode
     operand1 = SD24BMEM0_32;
+    // temp_result = SD24BMEMH0;
+    // temp_result = (temp_result << 16) | SD24BMEML0;
+    // operand1 = (int32_t)temp_result;
+    counts = operand1;
     if ((operand1 > 245760) || (operand1 < -245760))
       range_overflow = 8;
     dc_acc_sampled_value += operand1;
@@ -132,12 +145,12 @@ __interrupt void sd24b_adc_interrupt(void) {
   //   __delay_cycles(6);
   //   break;
   case POWER:
-    operand1 = SD24BMEM0_32;    // Voltage sample
-    operand2 = SD24BMEM1_32;    // Current sample
+    operand1 = SD24BMEM0_32; // Voltage sample
+    operand2 = SD24BMEM1_32; // Current sample
 
     if ((operand1 > OVERFLOW_H) || (operand1 < OVERFLOW_L) ||
         (operand2 > OVERFLOW_H) || (operand2 < OVERFLOW_L))
-        range_overflow = 8;
+      range_overflow = 8;
 
     operand1 -= active_voltage_offset;
     operand2 -= active_current_offset;
@@ -167,42 +180,37 @@ __interrupt void sd24b_adc_interrupt(void) {
       last_sampled_value_fp =
           ac_b_coefficient * last_sampled_value_fp +
           ac_a_coefficient * sampled_value_fp; // compute smoothing filter
-    } else if (measurement_mode == POWER) // multiply by gain factor and run
-                                          // through AC smoothing filter
+    } 
+    
+    else if (measurement_mode == POWER) 
     {
+      // multiply by gain factor and run through AC smoothing filter
       ac_acc_sampled_value = (RES64 >> DIVIDE_NUMBER_SHIFTS);
       sampled_value_fp = (float)ac_acc_sampled_value;
       sampled_value_fp = sampled_value_fp * active_gain;
-      last_sampled_value_fp = ac_b_coefficient * last_sampled_value_fp +
-                              ac_a_coefficient * sampled_value_fp;
-    } else {
-      sampled_value_fp = (float)(dc_acc_sampled_value >>= DIVIDE_NUMBER_SHIFTS);
-      calibration_value_fp = sampled_value_fp;
-      if (measurement_mode == DC_VOLTAGE)
-        sampled_value_fp =
-            (sampled_value_fp - active_voltage_offset) *
-            active_gain; // substract offset and multiply by gain factor and run
-                         // through DC smoothing filter
-      else
-        sampled_value_fp =
-            (sampled_value_fp - active_current_offset) * active_gain;
+      last_sampled_value_fp = ac_b_coefficient * last_sampled_value_fp + ac_a_coefficient * sampled_value_fp;
 
-      last_sampled_value_fp = dc_b_coefficient * last_sampled_value_fp +
-                              dc_a_coefficient * sampled_value_fp;
+    } else {
+
+      sampled_value_fp = (float)(dc_acc_sampled_value >>= DIVIDE_NUMBER_SHIFTS);
+
+      calibration_value_fp = sampled_value_fp;
+
+      if (measurement_mode == DC_VOLTAGE)
+        // substract offset and multiply by gain factor and run through DC smoothing filter
+        sampled_value_fp = (sampled_value_fp - active_voltage_offset) * active_gain;
+      else
+        sampled_value_fp = (sampled_value_fp - active_current_offset) * active_gain;
+
+      last_sampled_value_fp = dc_b_coefficient * last_sampled_value_fp + dc_a_coefficient * sampled_value_fp;
     }
 
     result_fp = last_sampled_value_fp;
     displayed_result_fp = result_fp * displayed_result_factor;
     sampling_completed = 1;
     dc_acc_sampled_value = 0;
-    //RES64 = 0;
+    // *((volatile int64_t *)&RESLO) = 0;
     sample_count = 0;
-
-    if (range_overflow > 0) {
-      LCDCBLKCTL |= BIT1; // Blink LCD to indicate Overflow/out-of-range conditi
-      range_overflow--;
-    } else
-      LCDCBLKCTL &= ~BIT1;
   }
 
   SD24BIFG &= ~SD24IFG0;
@@ -230,9 +238,8 @@ __interrupt void port2_interrupt(void) {
     key_debounce = KEY_DEBOUNCE_COUNT;
     SFRIE1 |= WDTIE;
   }
-
-  last_sampled_value_fp =
-      0; // re-initialize ADC averaging filter due to range or mode change
+  // re-initialize ADC averaging filter due to range or mode change
+  last_sampled_value_fp = 0; 
   sampled_value_fp = 0;
 
   _BIC_SR_IRQ(LPM0_bits); // Exit LPM0
@@ -256,19 +263,13 @@ __interrupt void wdt_interrupt(void) {
   {
     KEY_IFG_REG &= ~(KEY1 + KEY2); // so reset all IFGs
     KEY_IE_REG |= KEY1 + KEY2;     // re-enable all keyboard interrupts
-    WDT_Disable();                 // disable WDT interrupts
+    // key_event_ready = 1;
+    WDT_Disable(); // disable WDT interrupts
   }
 
   SFRIFG1 &= ~WDTIFG;
   _BIC_SR_IRQ(LPM0_bits); // Exit LPM0
 }
-
-// #pragma vector = TIMER0_A0_VECTOR
-// __interrupt void battery_check_interrupt(void) {
-//   {
-//     ;
-//   }
-// }
 
 #pragma vector = ADC10_VECTOR
 __interrupt void adc10_interrupt(void) { ; }

@@ -4,7 +4,7 @@
 
 SHELL = cmd.exe
 
-CG_TOOL_ROOT := C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS
+CG_TOOL_ROOT := C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
@@ -12,13 +12,16 @@ GEN_CMDS__FLAG :=
 ORDERED_OBJS += \
 "./clock.obj" \
 "./dmm_00879_hw_setup.obj" \
+"./dmm_00879_main.obj" \
+"./dmm_00879_processing.obj" \
+"./globals.obj" \
 "./hal_pmm.obj" \
 "./lcd.obj" \
-"./main.obj" \
 "./pins.obj" \
 "./printf.obj" \
 "./timer.obj" \
 "./uart.obj" \
+"./wdt.obj" \
 "../lnk_msp430f6736.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibmath.a \
@@ -72,9 +75,6 @@ endif
 ifneq ($(strip $(S64_DEPS)),)
 -include $(S64_DEPS)
 endif
-ifneq ($(strip $(INO_DEPS)),)
--include $(INO_DEPS)
-endif
 ifneq ($(strip $(CLA_DEPS)),)
 -include $(CLA_DEPS)
 endif
@@ -89,9 +89,6 @@ ifneq ($(strip $(C62_DEPS)),)
 endif
 ifneq ($(strip $(C67_DEPS)),)
 -include $(C67_DEPS)
-endif
-ifneq ($(strip $(PDE_DEPS)),)
--include $(PDE_DEPS)
 endif
 ifneq ($(strip $(K_DEPS)),)
 -include $(K_DEPS)
@@ -143,15 +140,15 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 DMM.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: MSP430 Linker'
-	"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --define=__MSP430F6736__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"DMM.map" --heap_size=80 --stack_size=80 --cinit_hold_wdt=on -i"C:/ti/ccs2031/ccs/ccs_base/msp430/include" -i"C:/ti/ccs2031/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/lib" -i"C:/ti/ccs2031/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="DMM_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "DMM.out" $(ORDERED_OBJS)
+	"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --define=__MSP430F6736__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"DMM.map" --heap_size=80 --stack_size=80 --cinit_hold_wdt=on -i"C:/ti/ccs2040/ccs/ccs_base/msp430/include" -i"C:/ti/ccs2040/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/lib" -i"C:/ti/ccs2040/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="DMM_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "DMM.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "clock.obj" "dmm_00879_hw_setup.obj" "hal_pmm.obj" "lcd.obj" "main.obj" "pins.obj" "printf.obj" "timer.obj" "uart.obj" 
-	-$(RM) "clock.d" "dmm_00879_hw_setup.d" "hal_pmm.d" "lcd.d" "main.d" "pins.d" "printf.d" "timer.d" "uart.d" 
+	-$(RM) "clock.obj" "dmm_00879_hw_setup.obj" "dmm_00879_main.obj" "dmm_00879_processing.obj" "globals.obj" "hal_pmm.obj" "lcd.obj" "pins.obj" "printf.obj" "timer.obj" "uart.obj" "wdt.obj" 
+	-$(RM) "clock.d" "dmm_00879_hw_setup.d" "dmm_00879_main.d" "dmm_00879_processing.d" "globals.d" "hal_pmm.d" "lcd.d" "pins.d" "printf.d" "timer.d" "uart.d" "wdt.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

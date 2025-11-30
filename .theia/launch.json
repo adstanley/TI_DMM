@@ -16,7 +16,7 @@
                         {
                             "name": "MSP430",
                             "debuggerSettings": {
-                                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+                                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues>\n\n  <property id=\"TargetVoltage\">\n    <curValue>2000</curValue>\n  </property>\n\n</PropertyValues>\n"
                             }
                         }
                     ]

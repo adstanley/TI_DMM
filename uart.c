@@ -305,6 +305,31 @@ void uart_print_integer_interrupt(uint32_t val) {
     uart_print_interrupt(p);
 }
 
+void uart_print_signed_integer_interrupt(int32_t val) {
+    uint32_t magnitude;
+    
+    // 1. Check and print sign
+    if (val < 0) {
+        uart_print_interrupt("-");
+        // Use -val to get the positive magnitude (or abs(val))
+        magnitude = (uint32_t)(-val); 
+    } else {
+        magnitude = (uint32_t)val;
+    }
+
+    // 2. Use existing logic to print the magnitude
+    char numbuf[12]; 
+    char *p = numbuf + sizeof(numbuf);
+    *--p = '\0';
+
+    do {
+        *--p = '0' + (magnitude % 10);
+        magnitude /= 10;
+    } while (magnitude);
+
+    uart_print_interrupt(p);
+}
+
 void uart_println_interrupt(void) { uart_print_interrupt("\r\n"); }
 
 // ---------------------------------------------------------------------------
@@ -355,6 +380,104 @@ void uart_log_interrupt(const char *msg) {
   static const char nl = '\n';
   uart_queue_bytes((const uint8_t *)&nl, 1);
 }
+
+/*=====================================================================
+  Pre-computed powers of 10 as float – avoids calling powf() at runtime
+=====================================================================*/
+static const float pow10f[] = {
+    1.0f,
+    10.0f,
+    100.0f,
+    1000.0f,
+    10000.0f,
+    100000.0f,
+    1000000.0f,
+    10000000.0f
+};
+
+
+/*=====================================================================
+  float_to_str() – core conversion routine
+  You call this directly if you want the string without printing
+=====================================================================*/
+void float_to_str(float value, char *buf, uint8_t decimal_places)
+{
+    char *ptr = buf;
+    uint8_t digits;
+
+    // Handle negative numbers
+    if (value < 0.0f)
+    {
+        *ptr++ = '-';
+        value = -value;
+    }
+
+    // Round correctly to the specified number of decimal places
+    float rounding = 0.5f;
+    uint8_t i;
+    for (i = 0; i < decimal_places; ++i) {
+        rounding /= 10.0f; }
+    value += rounding;
+
+    // Extract integer part
+    uint32_t int_part = (uint32_t)value;
+    float remainder = value - (float)int_part;
+
+    // Convert integer part to string (fast integer-only method)
+    if (int_part == 0 && value > 0.0f)
+    {
+        *ptr++ = '0';           // leading zero before decimal point
+    }
+    else
+    {
+        char int_buf[11];
+        char *p = int_buf + sizeof(int_buf);
+        *--p = '\0';
+        do {
+            *--p = '0' + (int_part % 10);
+            int_part /= 10;
+        } while (int_part);
+        while (*p)
+            *ptr++ = *p++;
+    }
+
+    // Add decimal point if we need decimals
+    if (decimal_places > 0)
+    {
+        *ptr++ = '.';
+
+        // Extract decimal part
+        uint32_t dec_part = (uint32_t)(remainder * pow10f[decimal_places]);
+        digits = decimal_places;
+
+        char dec_buf[11];
+        char *p = dec_buf + sizeof(dec_buf);
+        *--p = '\0';
+        do {
+            *--p = '0' + (dec_part % 10);
+            dec_part /= 10;
+        } while (--digits);
+
+        while (*p)
+            *ptr++ = *p++;
+    }
+
+    *ptr = '\0';  // null terminator
+}
+
+/*=====================================================================
+  uart_print_float()
+  Prints a float with fixed decimal places (e.g. 1.2345 with 4 decimals)
+  Handles negative numbers and rounding correctly.
+  Max 10 characters total including sign, dot and terminator.
+=====================================================================*/
+void uart_print_float(float value, uint8_t decimal_places)
+{
+    char buf[12];
+    float_to_str(value, buf, decimal_places);
+    uart_print_interrupt(buf);
+}
+
 
 //******************************************************************************
 //

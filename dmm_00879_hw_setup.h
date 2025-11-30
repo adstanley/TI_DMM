@@ -33,7 +33,6 @@
 #ifndef __SETUP_H
 #define __SETUP_H
 
-// Module Prototypes
-int __low_level_init(void);
 void system_setup(void);
+
 #endif

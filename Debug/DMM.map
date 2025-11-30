@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v21.6.1                     
 ******************************************************************************
->> Linked Wed Nov 26 08:40:55 2025
+>> Linked Sun Nov 30 17:02:04 2025
 
 OUTPUT FILE NAME:   <DMM.out>
-ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 0000407c
+ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 0000459c
 
 
 MEMORY CONFIGURATION
@@ -18,8 +18,8 @@ MEMORY CONFIGURATION
   INFOC                 00001880   00000080  00000000  00000080  RWIX
   INFOB                 00001900   00000080  00000000  00000080  RWIX
   INFOA                 00001980   00000080  00000000  00000080  RWIX
-  RAM                   00001c00   00002000  0000025e  00001da2  RWIX
-  FLASH                 00004000   0000bf80  000007c2  0000b7be  RWIX
+  RAM                   00001c00   00002000  000002bf  00001d41  RWIX
+  FLASH                 00004000   0000bf80  00000a44  0000b53c  RWIX
   INT00                 0000ff80   00000002  00000000  00000002  RWIX
   INT01                 0000ff82   00000002  00000000  00000002  RWIX
   INT02                 0000ff84   00000002  00000000  00000002  RWIX
@@ -84,7 +84,7 @@ MEMORY CONFIGURATION
   INT61                 0000fffa   00000002  00000002  00000000  RWIX
   INT62                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FLASH2                00010000   00013ff8  00000cb2  00013346  RWIX
+  FLASH2                00010000   00013ff8  00001526  00012ad2  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -92,40 +92,64 @@ SECTION ALLOCATION MAP
  output                                  attributes/
 section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
-.bss       0    00001c00    00000200     UNINITIALIZED
+.bss       0    00001c00    0000022b     UNINITIALIZED
                   00001c00    00000100     uart.obj (.bss:rx_buf$6)
                   00001d00    00000100     uart.obj (.bss:tx_buf)
+                  00001e00    00000008     (.common:ac_acc_sampled_value)
+                  00001e08    00000004     (.common:active_current_offset)
+                  00001e0c    00000004     (.common:calibration_value_fp)
+                  00001e10    00000004     (.common:dc_acc_sampled_value)
+                  00001e14    00000004     (.common:displayed_result_factor)
+                  00001e18    00000004     (.common:displayed_result_fp)
+                  00001e1c    00000004     (.common:operand1)
+                  00001e20    00000004     (.common:operand2)
+                  00001e24    00000004     (.common:result_fp)
+                  00001e28    00000001     (.common:Events)
+                  00001e29    00000001     (.common:key_debounce)
+                  00001e2a    00000001     (.common:sampling_completed)
 
-.data      0    00001e00    0000000e     UNINITIALIZED
-                  00001e00    0000000c     uart.obj (.data)
-                  00001e0c    00000002     timer.obj (.data)
+.data      0    00001e2c    00000044     UNINITIALIZED
+                  00001e2c    00000024     dmm_00879_main.obj (.data)
+                  00001e50    0000000c     uart.obj (.data)
+                  00001e5c    0000000b     dmm_00879_processing.obj (.data)
+                  00001e67    00000001     --HOLE--
+                  00001e68    00000006     globals.obj (.data)
+                  00001e6e    00000002     timer.obj (.data)
 
 .stack     0    00003bb0    00000050     UNINITIALIZED
                   00003bb0    00000004     rts430x_lc_rd_eabi.lib : boot.c.obj (.stack)
                   00003bb4    0000004c     --HOLE--
 
 .text:_isr 
-*          0    00004000    000000a0     
-                  00004000    0000005a     uart.obj (.text:_isr:USCI_A1_ISR)
-                  0000405a    00000022     timer.obj (.text:_isr:TIMER0_A0_ISR)
-                  0000407c    0000001c     rts430x_lc_rd_eabi.lib : boot.c.obj (.text:_isr:_c_int00_noargs)
-                  00004098    00000008                            : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
+*          0    00004000    000005c2     
+                  00004000    0000046c     dmm_00879_processing.obj (.text:_isr:sd24b_adc_interrupt)
+                  0000446c    00000068     dmm_00879_processing.obj (.text:_isr:port2_interrupt)
+                  000044d4    0000005a     uart.obj (.text:_isr:USCI_A1_ISR)
+                  0000452e    0000004c     dmm_00879_processing.obj (.text:_isr:wdt_interrupt)
+                  0000457a    00000022     timer.obj (.text:_isr:TIMER0_A0_ISR)
+                  0000459c    0000001c     rts430x_lc_rd_eabi.lib : boot.c.obj (.text:_isr:_c_int00_noargs)
+                  000045b8    00000008                            : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
+                  000045c0    00000002     dmm_00879_processing.obj (.text:_isr:adc10_interrupt)
 
-.cinit     0    00004798    0000002a     
-                  00004798    0000000c     (__TI_handler_table)
-                  000047a4    00000007     (.cinit..data.load) [load image, compression = lzss]
-                  000047ab    00000001     --HOLE-- [fill = 0]
-                  000047ac    00000006     (.cinit..bss.load) [load image, compression = zero_init]
-                  000047b2    00000010     (__TI_cinit_table)
+.cinit     0    00004a02    00000042     
+                  00004a02    0000001f     (.cinit..data.load) [load image, compression = lzss]
+                  00004a21    00000001     --HOLE-- [fill = 0]
+                  00004a22    0000000c     (__TI_handler_table)
+                  00004a2e    00000006     (.cinit..bss.load) [load image, compression = zero_init]
+                  00004a34    00000010     (__TI_cinit_table)
 
 .binit     0    00004000    00000000     
 
 .init_array 
 *          0    00004000    00000000     UNINITIALIZED
 
-.const     0    000040a0    000006f8     
-                  000040a0    000006f4     main.obj (.const:.string)
-                  00004794    00000004     uart.obj (.const:.string)
+.const     0    000045c2    00000440     
+                  000045c2    0000033a     dmm_00879_main.obj (.const:.string)
+                  000048fc    000000c0     MSPMATHLIB_CCS_msp430_5xx_6xx_FRxx_large_code_restricted_data.lib : msp430_tables.o (.const:msp430_sqrt_lookup)
+                  000049bc    00000020     uart.obj (.const:pow10f)
+                  000049dc    00000010     dmm_00879_main.obj (.const:$P$T4$6)
+                  000049ec    00000010     dmm_00879_main.obj (.const:$P$T5$7)
+                  000049fc    00000006     uart.obj (.const:.string)
 
 RTC        0    0000ffd0    00000002     
                   0000ffd0    00000002     rts430x_lc_rd_eabi.lib : int40.asm.obj (.int40)
@@ -142,7 +166,7 @@ TIMER3_A0
                   0000ffd6    00000002     rts430x_lc_rd_eabi.lib : int43.asm.obj (.int43)
 
 PORT2      0    0000ffd8    00000002     
-                  0000ffd8    00000002     rts430x_lc_rd_eabi.lib : int44.asm.obj (.int44)
+                  0000ffd8    00000002     dmm_00879_processing.obj (.int44)
 
 TIMER2_A1 
 *          0    0000ffda    00000002     
@@ -184,10 +208,10 @@ TIMER0_A0
                   0000ffee    00000002     timer.obj (.int55)
 
 SD24B      0    0000fff0    00000002     
-                  0000fff0    00000002     rts430x_lc_rd_eabi.lib : int56.asm.obj (.int56)
+                  0000fff0    00000002     dmm_00879_processing.obj (.int56)
 
 ADC10      0    0000fff2    00000002     
-                  0000fff2    00000002     rts430x_lc_rd_eabi.lib : int57.asm.obj (.int57)
+                  0000fff2    00000002     dmm_00879_processing.obj (.int57)
 
 USCI_B0    0    0000fff4    00000002     
                   0000fff4    00000002     rts430x_lc_rd_eabi.lib : int58.asm.obj (.int58)
@@ -196,7 +220,7 @@ USCI_A0    0    0000fff6    00000002
                   0000fff6    00000002     rts430x_lc_rd_eabi.lib : int59.asm.obj (.int59)
 
 WDT        0    0000fff8    00000002     
-                  0000fff8    00000002     rts430x_lc_rd_eabi.lib : int60.asm.obj (.int60)
+                  0000fff8    00000002     dmm_00879_processing.obj (.int60)
 
 UNMI       0    0000fffa    00000002     
                   0000fffa    00000002     rts430x_lc_rd_eabi.lib : int61.asm.obj (.int61)
@@ -207,58 +231,103 @@ SYSNMI     0    0000fffc    00000002
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430x_lc_rd_eabi.lib : boot.c.obj (.reset)
 
-.text      0    00010000    00000cb2     
-                  00010000    00000538     main.obj (.text:uart_print_system_state)
-                  00010538    00000166     main.obj (.text:uart_printf)
-                  0001069e    000000d0     hal_pmm.obj (.text:SetVCoreUp)
-                  0001076e    000000d0     main.obj (.text:uart_print_u32)
-                  0001083e    000000a2     hal_pmm.obj (.text:SetVCoreDown)
-                  000108e0    0000008a     clock.obj (.text:Clock_Init_16MHz)
-                  0001096a    00000076     rts430x_lc_rd_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
-                  000109e0    0000006e     main.obj (.text:main)
-                  00010a4e    0000006e     uart.obj (.text:uart_print_interrupt)
-                  00010abc    00000058     rts430x_lc_rd_eabi.lib : div32u.asm.obj (.text)
-                  00010b14    00000054                            : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
-                  00010b68    00000040     hal_pmm.obj (.text:SetVCore)
-                  00010ba8    00000036     main.obj (.text:uart_print_i32)
-                  00010bde    00000028     uart.obj (.text:uart_init_9600)
-                  00010c06    00000024     rts430x_lc_rd_eabi.lib : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init_nomemset:__TI_zero_init_nomemset)
-                  00010c2a    00000018                            : mult16_f5hw.asm.obj (.text)
-                  00010c42    00000014                            : memcpy.c.obj (.text:memcpy)
-                  00010c56    00000012                            : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
-                  00010c68    00000012     uart.obj (.text:uart_print)
-                  00010c7a    0000000e     uart.obj (.text:uart_putc)
-                  00010c88    0000000a     dmm_00879_hw_setup.obj (.text:__low_level_init)
-                  00010c92    0000000a     rts430x_lc_rd_eabi.lib : lsl16.asm.obj (.text)
-                  00010c9c    0000000a     uart.obj (.text:uart_println_interrupt)
-                  00010ca6    00000006     rts430x_lc_rd_eabi.lib : exit.c.obj (.text:abort)
-                  00010cac    00000004                            : pre_init.c.obj (.text:_system_pre_init)
-                  00010cb0    00000002                            : startup.c.obj (.text:_system_post_cinit)
+.text      0    00010000    00001526     
+                  00010000    00000178     uart.obj (.text:float_to_str)
+                  00010178    00000138     MSPMATHLIB_CCS_msp430_5xx_6xx_FRxx_large_code_restricted_data.lib : msp430_sqrt.o (.text:sqrtf)
+                  000102b0    00000132     rts430x_lc_rd_eabi.lib : fs_add.asm.obj (.text)
+                  000103e2    00000100                            : fltllif.c.obj (.text:__mspabi_fltllif)
+                  000104e2    000000d4     dmm_00879_main.obj (.text:set_display_result_factor)
+                  000105b6    000000d0     hal_pmm.obj (.text:SetVCoreUp)
+                  00010686    000000cc     MSPMATHLIB_CCS_msp430_5xx_6xx_FRxx_large_code_restricted_data.lib : msp430_common.o (.text:msp430_calc_sqrt)
+                  00010752    000000b8     rts430x_lc_rd_eabi.lib : fs_mpy.asm.obj (.text)
+                  0001080a    000000b6     dmm_00879_main.obj (.text:dc_voltage_measurement_mode)
+                  000108c0    000000b0     dmm_00879_main.obj (.text:voltage_settings)
+                  00010970    000000ac     dmm_00879_main.obj (.text:main)
+                  00010a1c    000000a2     hal_pmm.obj (.text:SetVCoreDown)
+                  00010abe    0000009a     dmm_00879_main.obj (.text:ac_voltage_measurement_mode)
+                  00010b58    00000090     rts430x_lc_rd_eabi.lib : fs_div.asm.obj (.text)
+                  00010be8    0000008a     clock.obj (.text:Clock_Init_16MHz)
+                  00010c72    00000086     dmm_00879_main.obj (.text:enable_disable_ADCs)
+                  00010cf8    00000084     dmm_00879_main.obj (.text:ac_current_measurement_mode)
+                  00010d7c    00000082     dmm_00879_main.obj (.text:power_settings)
+                  00010dfe    00000080     dmm_00879_main.obj (.text:dc_current_measurement_mode)
+                  00010e7e    00000080     dmm_00879_main.obj (.text:power_measurement_mode)
+                  00010efe    00000076     rts430x_lc_rd_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  00010f74    00000070     uart.obj (.text:uart_print_signed_integer_interrupt)
+                  00010fe4    0000006e     uart.obj (.text:uart_print_interrupt)
+                  00011052    0000006c     dmm_00879_main.obj (.text:off)
+                  000110be    00000064     dmm_00879_main.obj (.text:current_settings)
+                  00011122    00000062     dmm_00879_hw_setup.obj (.text:system_setup)
+                  00011184    00000058     rts430x_lc_rd_eabi.lib : div32u.asm.obj (.text)
+                  000111dc    00000054                            : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
+                  00011230    0000004c                            : fs_toul.asm.obj (.text)
+                  0001127c    0000004a                            : fs_cmp.asm.obj (.text)
+                  000112c6    0000004a                            : fs_ltof.asm.obj (.text)
+                  00011310    00000040     hal_pmm.obj (.text:SetVCore)
+                  00011350    00000040     rts430x_lc_rd_eabi.lib : asr64.c.obj (.text:__mspabi_srall)
+                  00011390    0000003e                            : asr32.asm.obj (.text:l_asr_const)
+                  000113ce    0000003a                            : lsr64.c.obj (.text:__mspabi_srlll)
+                  00011408    00000032                            : fs_ultof.asm.obj (.text)
+                  0001143a    00000028     uart.obj (.text:uart_init_9600)
+                  00011462    00000024     rts430x_lc_rd_eabi.lib : copy_zero_init.c.obj (.text:decompress:ZI:__TI_zero_init_nomemset:__TI_zero_init_nomemset)
+                  00011486    00000018     uart.obj (.text:uart_print_float)
+                  0001149e    00000014     rts430x_lc_rd_eabi.lib : memcpy.c.obj (.text:memcpy)
+                  000114b2    00000012                            : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
+                  000114c4    00000012     uart.obj (.text:uart_print)
+                  000114d6    0000000e     uart.obj (.text:uart_putc)
+                  000114e4    0000000c     wdt.obj (.text:WDT_Disable)
+                  000114f0    0000000c     wdt.obj (.text:WDT_Enable)
+                  000114fc    0000000a     rts430x_lc_rd_eabi.lib : fs_neg.asm.obj (.text)
+                  00011506    0000000a     uart.obj (.text:uart_println)
+                  00011510    0000000a     uart.obj (.text:uart_println_interrupt)
+                  0001151a    00000006     rts430x_lc_rd_eabi.lib : exit.c.obj (.text:abort)
+                  00011520    00000004                            : pre_init.c.obj (.text:_system_pre_init)
+                  00011524    00000002                            : startup.c.obj (.text:_system_post_cinit)
 
 MODULE SUMMARY
 
        Module                       code   ro data   rw data
        ------                       ----   -------   -------
     .\
-       main.obj                     2066   1780      0      
-       uart.obj                     282    6         524    
+       dmm_00879_main.obj           1756   858       59     
+       uart.obj                     804    40        524    
+       dmm_00879_processing.obj     1314   8         31     
        hal_pmm.obj                  434    0         0      
        clock.obj                    138    0         0      
+       dmm_00879_hw_setup.obj       98     0         0      
        timer.obj                    34     2         2      
-       dmm_00879_hw_setup.obj       10     0         0      
+       wdt.obj                      24     0         0      
+       globals.obj                  0      0         6      
     +--+----------------------------+------+---------+---------+
-       Total:                       2964   1788      526    
+       Total:                       4602   908       622    
                                                             
-    C:\ti\ccs2031\ccs\tools\compiler\ti-cgt-msp430_21.6.1.LTS\lib\rts430x_lc_rd_eabi.lib
+    C:\ti\ccs2040\ccs\ccs_base\msp430\lib\5xx_6xx_FRxx\MSPMATHLIB_CCS_msp430_5xx_6xx_FRxx_large_code_restricted_data.lib
+       msp430_sqrt.o                312    0         0      
+       msp430_common.o              204    0         0      
+       msp430_tables.o              0      192       0      
+    +--+----------------------------+------+---------+---------+
+       Total:                       516    192       0      
+                                                            
+    C:\ti\ccs2040\ccs\tools\compiler\ti-cgt-msp430_21.6.1.LTS\lib\rts430x_lc_rd_eabi.lib
+       fs_add.asm.obj               306    0         0      
+       fltllif.c.obj                256    0         0      
+       fs_mpy.asm.obj               184    0         0      
+       fs_div.asm.obj               144    0         0      
        copy_decompress_lzss.c.obj   118    0         0      
        div32u.asm.obj               88     0         0      
        autoinit.c.obj               84     0         0      
+       fs_toul.asm.obj              76     0         0      
+       fs_cmp.asm.obj               74     0         0      
+       fs_ltof.asm.obj              74     0         0      
+       asr64.c.obj                  64     0         0      
+       asr32.asm.obj                62     0         0      
+       lsr64.c.obj                  58     0         0      
+       fs_ultof.asm.obj             50     0         0      
        copy_zero_init.c.obj         36     0         0      
        boot.c.obj                   28     2         0      
-       mult16_f5hw.asm.obj          24     0         0      
        memcpy.c.obj                 20     0         0      
        copy_decompress_none.c.obj   18     0         0      
-       lsl16.asm.obj                10     0         0      
+       fs_neg.asm.obj               10     0         0      
        isr_trap.asm.obj             8      0         0      
        exit.c.obj                   6      0         0      
        pre_init.c.obj               4      0         0      
@@ -266,7 +335,6 @@ MODULE SUMMARY
        int41.asm.obj                0      2         0      
        int42.asm.obj                0      2         0      
        int43.asm.obj                0      2         0      
-       int44.asm.obj                0      2         0      
        int45.asm.obj                0      2         0      
        int46.asm.obj                0      2         0      
        int47.asm.obj                0      2         0      
@@ -276,33 +344,30 @@ MODULE SUMMARY
        int51.asm.obj                0      2         0      
        int52.asm.obj                0      2         0      
        int54.asm.obj                0      2         0      
-       int56.asm.obj                0      2         0      
-       int57.asm.obj                0      2         0      
        int58.asm.obj                0      2         0      
        int59.asm.obj                0      2         0      
-       int60.asm.obj                0      2         0      
        int61.asm.obj                0      2         0      
        int62.asm.obj                0      2         0      
        startup.c.obj                2      0         0      
     +--+----------------------------+------+---------+---------+
-       Total:                       446    44        0      
+       Total:                       1770   36        0      
                                                             
        Stack:                       0      0         80     
-       Linker Generated:            0      41        0      
+       Linker Generated:            0      65        0      
     +--+----------------------------+------+---------+---------+
-       Grand Total:                 3410   1873      606    
+       Grand Total:                 6888   1201      702    
 
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 000047b2 records: 2, size/record: 8, table size: 16
-	.data: load addr=000047a4, load size=00000007 bytes, run addr=00001e00, run size=0000000e bytes, compression=lzss
-	.bss: load addr=000047ac, load size=00000006 bytes, run addr=00001c00, run size=00000200 bytes, compression=zero_init
+__TI_cinit_table @ 00004a34 records: 2, size/record: 8, table size: 16
+	.data: load addr=00004a02, load size=0000001f bytes, run addr=00001e2c, run size=00000044 bytes, compression=lzss
+	.bss: load addr=00004a2e, load size=00000006 bytes, run addr=00001c00, run size=0000022b bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 00004798 records: 3, size/record: 4, table size: 12
+__TI_handler_table @ 00004a22 records: 3, size/record: 4, table size: 12
 	index: 0, handler: __TI_zero_init
 	index: 1, handler: __TI_decompress_lzss
 	index: 2, handler: __TI_decompress_none
@@ -383,7 +448,7 @@ address   name
 00000486  BAKMEM3_L                              
 000004be  BCD2BIN                                
 000004bc  BIN2BCD                                
-00010ca6  C$$EXIT                                
+0001151a  C$$EXIT                                
 00000150  CRCDI                                  
 00000152  CRCDIRB                                
 00000153  CRCDIRB_H                              
@@ -396,7 +461,7 @@ address   name
 00000156  CRCRESR                                
 00000157  CRCRESR_H                              
 00000156  CRCRESR_L                              
-000108e0  Clock_Init_16MHz                       
+00010be8  Clock_Init_16MHz                       
 00000510  DMA0CTL                                
 00000516  DMA0DA                                 
 00000518  DMA0DAH                                
@@ -427,6 +492,7 @@ address   name
 00000506  DMACTL3                                
 00000508  DMACTL4                                
 0000050e  DMAIV                                  
+00001e28  Events                                 
 00000140  FCTL1                                  
 00000141  FCTL1_H                                
 00000140  FCTL1_L                                
@@ -935,9 +1001,9 @@ address   name
 0000019a  SYSUNIV                                
 0000019b  SYSUNIV_H                              
 0000019a  SYSUNIV_L                              
-00010b68  SetVCore                               
-0001083e  SetVCoreDown                           
-0001069e  SetVCoreUp                             
+00011310  SetVCore                               
+00010a1c  SetVCoreDown                           
+000105b6  SetVCoreUp                             
 00000352  TA0CCR0                                
 00000354  TA0CCR1                                
 00000356  TA0CCR2                                
@@ -972,7 +1038,7 @@ address   name
 00000460  TA3EX0                                 
 0000046e  TA3IV                                  
 00000450  TA3R                                   
-0000405a  TIMER0_A0_ISR                          
+0000457a  TIMER0_A0_ISR                          
 000005d0  UCA0ABCTL                              
 000005c6  UCA0BRW                                
 000005c7  UCA0BRW_H                              
@@ -1139,21 +1205,23 @@ address   name
 00000170  UCSCTL8                                
 00000171  UCSCTL8_H                              
 00000170  UCSCTL8_L                              
-00004000  USCI_A1_ISR                            
+000044d4  USCI_A1_ISR                            
 0000015c  WDTCTL                                 
 0000015d  WDTCTL_H                               
 0000015c  WDTCTL_L                               
+000114e4  WDT_Disable                            
+000114f0  WDT_Enable                             
 00003c00  __STACK_END                            
 00000050  __STACK_SIZE                           
-000047b2  __TI_CINIT_Base                        
-000047c2  __TI_CINIT_Limit                       
-000047c2  __TI_CINIT_Warm                        
-00004798  __TI_Handler_Table_Base                
-000047a4  __TI_Handler_Table_Limit               
-00004098  __TI_ISR_TRAP                          
-00010b14  __TI_auto_init_nobinit_nopinit_hold_wdt
-0001096a  __TI_decompress_lzss                   
-00010c56  __TI_decompress_none                   
+00004a34  __TI_CINIT_Base                        
+00004a44  __TI_CINIT_Limit                       
+00004a44  __TI_CINIT_Warm                        
+00004a22  __TI_Handler_Table_Base                
+00004a2e  __TI_Handler_Table_Limit               
+000045b8  __TI_ISR_TRAP                          
+000111dc  __TI_auto_init_nobinit_nopinit_hold_wdt
+00010efe  __TI_decompress_lzss                   
+000114b2  __TI_decompress_none                   
 0000ffd0  __TI_int40                             
 0000ffd2  __TI_int41                             
 0000ffd4  __TI_int42                             
@@ -1180,30 +1248,106 @@ address   name
 ffffffff  __TI_pprof_out_hndl                    
 ffffffff  __TI_prof_data_size                    
 ffffffff  __TI_prof_data_start                   
-00010c06  __TI_zero_init_nomemset                
+00011462  __TI_zero_init_nomemset                
 ffffffff  __c_args__                             
-00010c88  __low_level_init                       
-00010abc  __mspabi_divul                         
-00010c2a  __mspabi_mpyi_f5hw                     
-00010abc  __mspabi_remul                         
-00010c92  __mspabi_slli                          
-0000407c  _c_int00_noargs                        
+000102b6  __mspabi_addf                          
+0001127c  __mspabi_cmpf                          
+00010b58  __mspabi_divf                          
+00011184  __mspabi_divul                         
+00011230  __mspabi_fixful                        
+000112c6  __mspabi_fltlif                        
+000103e2  __mspabi_fltllif                       
+00011408  __mspabi_fltulf                        
+00010752  __mspabi_mpyf                          
+000114fc  __mspabi_negf                          
+00011184  __mspabi_remul                         
+000113c8  __mspabi_sral_1                        
+000113a4  __mspabi_sral_10                       
+000113a0  __mspabi_sral_11                       
+0001139c  __mspabi_sral_12                       
+00011398  __mspabi_sral_13                       
+00011394  __mspabi_sral_14                       
+00011390  __mspabi_sral_15                       
+000113c4  __mspabi_sral_2                        
+000113c0  __mspabi_sral_3                        
+000113bc  __mspabi_sral_4                        
+000113b8  __mspabi_sral_5                        
+000113b4  __mspabi_sral_6                        
+000113b0  __mspabi_sral_7                        
+000113ac  __mspabi_sral_8                        
+000113a8  __mspabi_sral_9                        
+00011350  __mspabi_srall                         
+000113ce  __mspabi_srlll                         
+000102b0  __mspabi_subf                          
+0000459c  _c_int00_noargs                        
 0000fffe  _reset_vector                          
 00003bb0  _stack                                 
-00010cb0  _system_post_cinit                     
-00010cac  _system_pre_init                       
-00010ca6  abort                                  
-00001e0c  delay_remaining                        
-000109e0  main                                   
-00010c42  memcpy                                 
-00010bde  uart_init_9600                         
-00010c68  uart_print                             
-00010ba8  uart_print_i32                         
-00010a4e  uart_print_interrupt                   
-00010000  uart_print_system_state                
-0001076e  uart_print_u32                         
-00010c9c  uart_println_interrupt                 
-00010c7a  uart_putc                              
+00011524  _system_post_cinit                     
+00011520  _system_pre_init                       
+0001151a  abort                                  
+00001e3a  ac_a_coefficient                       
+00001e00  ac_acc_sampled_value                   
+00001e3e  ac_b_coefficient                       
+00010cf8  ac_current_measurement_mode            
+00001e49  ac_current_range                       
+00010abe  ac_voltage_measurement_mode            
+00001e48  ac_voltage_range                       
+00001e08  active_current_offset                  
+00001e42  active_gain                            
+00001e2e  active_voltage_offset                  
+000045c0  adc10_interrupt                        
+00001e0c  calibration_value_fp                   
+00001e6a  counts                                 
+000110be  current_settings                       
+00001e32  dc_a_coefficient                       
+00001e10  dc_acc_sampled_value                   
+00001e36  dc_b_coefficient                       
+00010dfe  dc_current_measurement_mode            
+00001e47  dc_current_range                       
+0001080a  dc_voltage_measurement_mode            
+00001e46  dc_voltage_range                       
+00001e4b  decimal_position                       
+00001e6e  delay_remaining                        
+00001e14  displayed_result_factor                
+00001e18  displayed_result_fp                    
+00010c72  enable_disable_ADCs                    
+00010000  float_to_str                           
+00001e29  key_debounce                           
+00001e68  key_event_ready                        
+00001e5e  last_sampled_value_fp                  
+00010970  main                                   
+00001e2c  measurement_mode                       
+0001149e  memcpy                                 
+00010686  msp430_calc_sqrt                       
+000048fc  msp430_sqrt_lookup                     
+00011052  off                                    
+00001e1c  operand1                               
+00001e20  operand2                               
+0000446c  port2_interrupt                        
+00010e7e  power_measurement_mode                 
+00001e4d  power_mode_cal                         
+00001e4a  power_range                            
+00010d7c  power_settings                         
+00001e66  range_overflow                         
+00001e24  result_fp                              
+00001e5c  sample_count                           
+00001e62  sampled_value_fp                       
+00001e2a  sampling_completed                     
+00004000  sd24b_adc_interrupt                    
+000104e2  set_display_result_factor              
+00010178  sqrtf                                  
+00011122  system_setup                           
+0001143a  uart_init_9600                         
+000114c4  uart_print                             
+00011486  uart_print_float                       
+00010fe4  uart_print_interrupt                   
+00010f74  uart_print_signed_integer_interrupt    
+00011506  uart_println                           
+00011510  uart_println_interrupt                 
+000114d6  uart_putc                              
+00001e4c  unit                                   
+000108c0  voltage_settings                       
+0000452e  wdt_interrupt                          
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -2035,18 +2179,56 @@ address   name
 00000a51  LCDBM18                                
 00000a52  LCDBM19                                
 00000a53  LCDBM20                                
-00001e0c  delay_remaining                        
+00001e00  ac_acc_sampled_value                   
+00001e08  active_current_offset                  
+00001e0c  calibration_value_fp                   
+00001e10  dc_acc_sampled_value                   
+00001e14  displayed_result_factor                
+00001e18  displayed_result_fp                    
+00001e1c  operand1                               
+00001e20  operand2                               
+00001e24  result_fp                              
+00001e28  Events                                 
+00001e29  key_debounce                           
+00001e2a  sampling_completed                     
+00001e2c  measurement_mode                       
+00001e2e  active_voltage_offset                  
+00001e32  dc_a_coefficient                       
+00001e36  dc_b_coefficient                       
+00001e3a  ac_a_coefficient                       
+00001e3e  ac_b_coefficient                       
+00001e42  active_gain                            
+00001e46  dc_voltage_range                       
+00001e47  dc_current_range                       
+00001e48  ac_voltage_range                       
+00001e49  ac_current_range                       
+00001e4a  power_range                            
+00001e4b  decimal_position                       
+00001e4c  unit                                   
+00001e4d  power_mode_cal                         
+00001e5c  sample_count                           
+00001e5e  last_sampled_value_fp                  
+00001e62  sampled_value_fp                       
+00001e66  range_overflow                         
+00001e68  key_event_ready                        
+00001e6a  counts                                 
+00001e6e  delay_remaining                        
 00003bb0  _stack                                 
 00003c00  __STACK_END                            
-00004000  USCI_A1_ISR                            
-0000405a  TIMER0_A0_ISR                          
-0000407c  _c_int00_noargs                        
-00004098  __TI_ISR_TRAP                          
-00004798  __TI_Handler_Table_Base                
-000047a4  __TI_Handler_Table_Limit               
-000047b2  __TI_CINIT_Base                        
-000047c2  __TI_CINIT_Limit                       
-000047c2  __TI_CINIT_Warm                        
+00004000  sd24b_adc_interrupt                    
+0000446c  port2_interrupt                        
+000044d4  USCI_A1_ISR                            
+0000452e  wdt_interrupt                          
+0000457a  TIMER0_A0_ISR                          
+0000459c  _c_int00_noargs                        
+000045b8  __TI_ISR_TRAP                          
+000045c0  adc10_interrupt                        
+000048fc  msp430_sqrt_lookup                     
+00004a22  __TI_Handler_Table_Base                
+00004a2e  __TI_Handler_Table_Limit               
+00004a34  __TI_CINIT_Base                        
+00004a44  __TI_CINIT_Limit                       
+00004a44  __TI_CINIT_Warm                        
 0000ffd0  __TI_int40                             
 0000ffd2  __TI_int41                             
 0000ffd4  __TI_int42                             
@@ -2071,36 +2253,77 @@ address   name
 0000fffa  __TI_int61                             
 0000fffc  __TI_int62                             
 0000fffe  _reset_vector                          
-00010000  uart_print_system_state                
-0001069e  SetVCoreUp                             
-0001076e  uart_print_u32                         
-0001083e  SetVCoreDown                           
-000108e0  Clock_Init_16MHz                       
-0001096a  __TI_decompress_lzss                   
-000109e0  main                                   
-00010a4e  uart_print_interrupt                   
-00010abc  __mspabi_divul                         
-00010abc  __mspabi_remul                         
-00010b14  __TI_auto_init_nobinit_nopinit_hold_wdt
-00010b68  SetVCore                               
-00010ba8  uart_print_i32                         
-00010bde  uart_init_9600                         
-00010c06  __TI_zero_init_nomemset                
-00010c2a  __mspabi_mpyi_f5hw                     
-00010c42  memcpy                                 
-00010c56  __TI_decompress_none                   
-00010c68  uart_print                             
-00010c7a  uart_putc                              
-00010c88  __low_level_init                       
-00010c92  __mspabi_slli                          
-00010c9c  uart_println_interrupt                 
-00010ca6  C$$EXIT                                
-00010ca6  abort                                  
-00010cac  _system_pre_init                       
-00010cb0  _system_post_cinit                     
+00010000  float_to_str                           
+00010178  sqrtf                                  
+000102b0  __mspabi_subf                          
+000102b6  __mspabi_addf                          
+000103e2  __mspabi_fltllif                       
+000104e2  set_display_result_factor              
+000105b6  SetVCoreUp                             
+00010686  msp430_calc_sqrt                       
+00010752  __mspabi_mpyf                          
+0001080a  dc_voltage_measurement_mode            
+000108c0  voltage_settings                       
+00010970  main                                   
+00010a1c  SetVCoreDown                           
+00010abe  ac_voltage_measurement_mode            
+00010b58  __mspabi_divf                          
+00010be8  Clock_Init_16MHz                       
+00010c72  enable_disable_ADCs                    
+00010cf8  ac_current_measurement_mode            
+00010d7c  power_settings                         
+00010dfe  dc_current_measurement_mode            
+00010e7e  power_measurement_mode                 
+00010efe  __TI_decompress_lzss                   
+00010f74  uart_print_signed_integer_interrupt    
+00010fe4  uart_print_interrupt                   
+00011052  off                                    
+000110be  current_settings                       
+00011122  system_setup                           
+00011184  __mspabi_divul                         
+00011184  __mspabi_remul                         
+000111dc  __TI_auto_init_nobinit_nopinit_hold_wdt
+00011230  __mspabi_fixful                        
+0001127c  __mspabi_cmpf                          
+000112c6  __mspabi_fltlif                        
+00011310  SetVCore                               
+00011350  __mspabi_srall                         
+00011390  __mspabi_sral_15                       
+00011394  __mspabi_sral_14                       
+00011398  __mspabi_sral_13                       
+0001139c  __mspabi_sral_12                       
+000113a0  __mspabi_sral_11                       
+000113a4  __mspabi_sral_10                       
+000113a8  __mspabi_sral_9                        
+000113ac  __mspabi_sral_8                        
+000113b0  __mspabi_sral_7                        
+000113b4  __mspabi_sral_6                        
+000113b8  __mspabi_sral_5                        
+000113bc  __mspabi_sral_4                        
+000113c0  __mspabi_sral_3                        
+000113c4  __mspabi_sral_2                        
+000113c8  __mspabi_sral_1                        
+000113ce  __mspabi_srlll                         
+00011408  __mspabi_fltulf                        
+0001143a  uart_init_9600                         
+00011462  __TI_zero_init_nomemset                
+00011486  uart_print_float                       
+0001149e  memcpy                                 
+000114b2  __TI_decompress_none                   
+000114c4  uart_print                             
+000114d6  uart_putc                              
+000114e4  WDT_Disable                            
+000114f0  WDT_Enable                             
+000114fc  __mspabi_negf                          
+00011506  uart_println                           
+00011510  uart_println_interrupt                 
+0001151a  C$$EXIT                                
+0001151a  abort                                  
+00011520  _system_pre_init                       
+00011524  _system_post_cinit                     
 ffffffff  __TI_pprof_out_hndl                    
 ffffffff  __TI_prof_data_size                    
 ffffffff  __TI_prof_data_start                   
 ffffffff  __c_args__                             
 
-[892 symbols]
+[971 symbols]

@@ -28,10 +28,10 @@ int main(void) {
   }
 }
 
-int __low_level_init(void) {
-  WDTCTL = WDTPW + WDTHOLD; // Stop WDT
-  return 1;
-}
+// int __low_level_init(void) {
+//   WDTCTL = WDTPW + WDTHOLD; // Stop WDT
+//   return 1;
+// }
 
 void test_interface_power_down() {
   P1SEL = 0;

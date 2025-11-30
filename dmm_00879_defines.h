@@ -86,17 +86,19 @@
 //==============================================================================
 // Calibration Constants (y = mx + b)
 // Used to convert raw ADC counts to real-world units (Volts/Amps/Watts)
+// real_voltage = (raw_adc_value - OFFSET) × GAIN
 //==============================================================================
 
 // --- Voltage Mode Calibration ---
 #define VOLTAGE_60mV_GAIN (2.77521E-7) // Multiplier for 60mV range // Volts per LSB
 #define VOLTAGE_60mV_OFFSET 2218       // Zero-offset correction // LSBs
 
-#define VOLTAGE_600mV_GAIN (3.02116E-6) // Volts per LSB
+#define VOLTAGE_600mV_GAIN (2*3.02116E-6) // Volts per LSB
 #define VOLTAGE_600mV_OFFSET 1911       // LSBs
 
 #define VOLTAGE_6V_GAIN (3.03370E-5) // Volts per LSB
-#define VOLTAGE_6V_OFFSET 2892       // LSBs
+//#define VOLTAGE_6V_OFFSET 2892       // LSBs
+#define VOLTAGE_6V_OFFSET 0
 
 #define VOLTAGE_60V_GAIN (3.02877E-4) // Volts per LSB
 #define VOLTAGE_60V_OFFSET 2400       // LSBs
@@ -213,9 +215,6 @@
 #define R_100K 3
 #define R_1M 4
 
-// Check battery every 2 minutes
-#define BATTERY_CHECK_INTERVAL 2 // minutes
-
 //==============================================================================
 // PLATFORM SPECIFIC I/O MAPPING
 //==============================================================================
@@ -250,73 +249,6 @@
 #define CURRENT_RANGE_MASK 0x08 // Controls P2.3
 #define CURRENT_RANGE_LSB BIT3
 
-//==============================================================================
-// Port Initialization Defines
-// Sets up the initial state of GPIOs at boot
-//==============================================================================
-
-/*! This defines the speed of USART 1 or USCI 0 */
-#define UART_PORT_1_SUPPORT 1
-#define UART1_BAUD_RATE 9600
-
-/*
- * PORT 1 CONFIGURATION
- * P1.0 (Out) - Memory CS
- * P1.1 (Out) - NC (Not Connected)
- * P1.2 (Sel) - UCA0SOMI (SPI Master In)
- * P1.3 (Sel) - UCA0SIMO (SPI Master Out)
- * P1.4 (Sel) - UCA0RXD (UART RX)
- * P1.5 (Sel) - UCA0TXD (UART TX)
- * P1.6 (Sel) - UCA0CLK (SPI Clock)
- * P1.7 (Out) - TEST_EN
- */
-
-#define P1DIR_INIT (BIT0 | BIT1 | BIT3 | BIT6 | BIT7)
-#define P1SEL_INIT (BIT2 | BIT3 | BIT4 | BIT5 | BIT6)
-#define P1OUT_INIT (BIT0)
-#define P1REN_INIT (0)
-#define P1MAP01_INIT (0)
-
-/*
- * PORT 2 CONFIGURATION
- * P2.0 (Out) - SCL for EEPROM (Bit-banged or I2C) / Front End Enable
- * P2.1 (Out) - SDA for EEPROM / Voltage Range LSB
- * P2.2 (Out) - A2SOMI / Voltage Range MSB
- * P2.3 (Out) - A2SIMO / Current Range
- * P2.4 (Out) - A2CS / Battery Test Enable
- * P2.5 (Out) - A2CLK
- * P2.6 (In)  - Key1 (Input with Pull-up)
- * P2.7 (In)  - Key2 (Input with Pull-up)
- */
-
-#define P2DIR_INIT (BIT0 | BIT1 | BIT2 | BIT3 | BIT4 | BIT5)
-#define P2SEL_INIT (0)
-#define P2OUT_INIT (BIT0 | BIT6 | BIT7)
-#define P2REN_INIT (BIT6 | BIT7)
-#define P2IES_INIT (BIT6 | BIT7)
-
-
-/*
- * PORT 3 CONFIGURATION
- * P3.0 - P3.3 (Out) - Operating Voltage Select / Mux Control
- * P3.4 - P3.7 (Out) - LCD Segment lines (Controlled by LCD Controller peripheral usually)
- */
-
-/*
-    P3.0 = Operating Voltage Select (MSB)
-    P3.1 = Operating Voltage Select
-    P3.2 = Operating Voltage Select
-    P3.3 = Operating Voltage Select
-    P3.4 = LCD segment line
-    P3.5 = LCD segment line
-    P3.6 = LCD segment line
-    P3.7 = LCD segment line
-*/
-
-#define P3DIR_INIT 0x0F // Lower nibble output
-#define P3SEL_INIT 0
-#define P3OUT_INIT (BIT0)
-#define P3REN_INIT 0
 
 //==============================================================================
 //  Hardware Multiplier 32-bit – FINAL correct signed MAC for AC RMS (CCS)
@@ -339,9 +271,11 @@
  * into position to create a single 64-bit result variable in C.
  * Essential for accumulating squares (V^2 or I^2) for RMS measurements without overflow.
  */
-#define RES64   ( (unsigned long long)RES3 << 48 | \
-                  (unsigned long long)RES2 << 32 | \
-                  (unsigned long long)RES1 << 16 | \
-                  RES0 )
+// #define RES64   ( (unsigned long long)RES3 << 48 | \
+//                   (unsigned long long)RES2 << 32 | \
+//                   (unsigned long long)RES1 << 16 | \
+//                   RES0 )
+
+#define RES64   (*((volatile int64_t*)&RESLO))
 
 #endif

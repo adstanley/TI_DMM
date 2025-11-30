@@ -14,7 +14,6 @@
 #include "uart.h"
 
 void uart_print_system_state(void);
-static void uart_printf(const char *fmt, ...);
 
 // -----------------------------------------------------------------
 // MAIN – External 32.768 kHz Crystal + 16.78 MHz MCLK/SMCLK
@@ -31,16 +30,19 @@ int main(void) {
   // Enable Interrupts
   _EINT();
 
+  // Enter LPM4 w/interrupt
+  // _BIS_SR(LPM4_bits + GIE); 
+
   // === Boot message ===
-  uart_printf("\r\n\r\n");
-  uart_printf("****************************************\r\n");
-  uart_printf("* TI DMM-00879 – External Crystal Test *\r\n");
-  uart_printf("* 32.768 kHz XT1 → 16.78 MHz MCLK/SMCLK*\r\n");
-  uart_printf("* UART 112500 baud                     *\r\n");
-  uart_printf("****************************************\r\n\r\n");
+  uart_print_interrupt("\r\n\r\n");
+  uart_print_interrupt("****************************************\r\n");
+  uart_print_interrupt("* TI DMM-00879 – External Crystal Test *\r\n");
+  uart_print_interrupt("* 32.768 kHz XT1 → 16.78 MHz MCLK/SMCLK*\r\n");
+  uart_print_interrupt("* UART 112500 baud                     *\r\n");
+  uart_print_interrupt("****************************************\r\n\r\n");
 
   uart_println_interrupt();
-  uart_print_system_state();
+  // uart_print_system_state();
 
   // uint32_t counter = 0;
 

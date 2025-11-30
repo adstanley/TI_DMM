@@ -1,7 +1,8 @@
 // pins.c
+#include <msp430f6736.h>
 #include "dmm_00879_defines.h"
 #include "lcd.h"
-#include <msp430f6736.h>
+#include "pins.h"
 
 /*==============================================================================
   GPIO configuration for general I/O and peripheral mapping
