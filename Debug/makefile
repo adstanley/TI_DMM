@@ -16,7 +16,6 @@ ORDERED_OBJS += \
 "./dmm_00879_processing.obj" \
 "./globals.obj" \
 "./hal_pmm.obj" \
-"./lcd.obj" \
 "./pins.obj" \
 "./printf.obj" \
 "./timer.obj" \
@@ -147,8 +146,8 @@ DMM.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "clock.obj" "dmm_00879_hw_setup.obj" "dmm_00879_main.obj" "dmm_00879_processing.obj" "globals.obj" "hal_pmm.obj" "lcd.obj" "pins.obj" "printf.obj" "timer.obj" "uart.obj" "wdt.obj" 
-	-$(RM) "clock.d" "dmm_00879_hw_setup.d" "dmm_00879_main.d" "dmm_00879_processing.d" "globals.d" "hal_pmm.d" "lcd.d" "pins.d" "printf.d" "timer.d" "uart.d" "wdt.d" 
+	-$(RM) "clock.obj" "dmm_00879_hw_setup.obj" "dmm_00879_main.obj" "dmm_00879_processing.obj" "globals.obj" "hal_pmm.obj" "pins.obj" "printf.obj" "timer.obj" "uart.obj" "wdt.obj" 
+	-$(RM) "clock.d" "dmm_00879_hw_setup.d" "dmm_00879_main.d" "dmm_00879_processing.d" "globals.d" "hal_pmm.d" "pins.d" "printf.d" "timer.d" "uart.d" "wdt.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

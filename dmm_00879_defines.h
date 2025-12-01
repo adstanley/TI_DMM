@@ -192,7 +192,6 @@
 #define AC_CURRENT 4
 #define POWER 5
 #define OFF 6
-#define OHMS 7
 
 // Range Enums (Used for switch/case logic in auto-ranging)
 // Voltage Ranges

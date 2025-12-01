@@ -15,7 +15,6 @@ C_SRCS += \
 ../dmm_00879_processing.c \
 ../globals.c \
 ../hal_pmm.c \
-../lcd.c \
 ../pins.c \
 ../printf.c \
 ../timer.c \
@@ -29,7 +28,6 @@ C_DEPS += \
 ./dmm_00879_processing.d \
 ./globals.d \
 ./hal_pmm.d \
-./lcd.d \
 ./pins.d \
 ./printf.d \
 ./timer.d \
@@ -43,7 +41,6 @@ OBJS += \
 ./dmm_00879_processing.obj \
 ./globals.obj \
 ./hal_pmm.obj \
-./lcd.obj \
 ./pins.obj \
 ./printf.obj \
 ./timer.obj \
@@ -57,7 +54,6 @@ OBJS__QUOTED += \
 "dmm_00879_processing.obj" \
 "globals.obj" \
 "hal_pmm.obj" \
-"lcd.obj" \
 "pins.obj" \
 "printf.obj" \
 "timer.obj" \
@@ -71,7 +67,6 @@ C_DEPS__QUOTED += \
 "dmm_00879_processing.d" \
 "globals.d" \
 "hal_pmm.d" \
-"lcd.d" \
 "pins.d" \
 "printf.d" \
 "timer.d" \
@@ -84,7 +79,6 @@ C_SRCS__QUOTED += \
 "../dmm_00879_processing.c" \
 "../globals.c" \
 "../hal_pmm.c" \
-"../lcd.c" \
 "../pins.c" \
 "../printf.c" \
 "../timer.c" \

@@ -14,10 +14,35 @@
 #define RXBUF_MASK (RXBUF_SIZE - 1)
 
 static volatile uint8_t tx_buf[TXBUF_SIZE];
+static volatile uint8_t rx_buf[RXBUF_SIZE];
 static volatile uint16_t tx_head = 0; // Next byte to send (ISR consumes)
 static volatile uint16_t tx_tail = 0; // Next free slot (app fills)
+static volatile uint16_t rx_head = 0; // Next byte to send (ISR consumes)
+static volatile uint16_t rx_tail = 0; // Next free slot (app fills)
 
 // ---------------------------------------------------------------------------
+
+// Non-blocking read from the UART receive ring buffer
+int16_t uart_getc(void) {
+    int16_t data = -1; // -1 indicates no data available
+
+    // Check if the buffer is NOT empty (head != tail)
+    if (rx_head != rx_tail) {
+        
+        // --- Atomically read and update the tail pointer ---
+        __disable_interrupt(); 
+        
+        // 1. Read the data
+        data = rx_buf[rx_tail];
+        
+        // 2. Advance the tail pointer circularly
+        rx_tail = (rx_tail + 1) & RXBUF_MASK;
+        
+        __enable_interrupt();
+    }
+    
+    return data;
+}
 
 // ---------------------------------------------------------------------------
 // UART Init Functions
@@ -106,6 +131,8 @@ void uart_init_9600(void) {
   ==========================================================================*/
   UCA1CTL1 &= ~UCSWRST; // Clear UCSWRST → USCI_A1 now operational
                         // UART is now ready for transmit/receive at 9600 baud
+  // Enable Receive Interrupt (UCRXIE) to trigger the ISR case 2 upon data receipt
+    UCA1IE |= UCRXIE;
 }
 
 /* 115200 BAUD
@@ -477,6 +504,8 @@ void uart_print_float(float value, uint8_t decimal_places)
     float_to_str(value, buf, decimal_places);
     uart_print_interrupt(buf);
 }
+
+
 
 
 //******************************************************************************

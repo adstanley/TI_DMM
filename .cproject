@@ -86,7 +86,7 @@
                         </tool>
                     </fileInfo>
                     <sourceEntries>
-                        <entry excluding="main.c|int_priority.c|main_uart_test.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        <entry excluding="main.c|lcd.c|int_priority.c|main_uart_test.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                     </sourceEntries>
                 </configuration>
             </storageModule>

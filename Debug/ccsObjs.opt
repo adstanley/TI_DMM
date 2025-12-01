@@ -4,7 +4,6 @@
 "./dmm_00879_processing.obj"
 "./globals.obj"
 "./hal_pmm.obj"
-"./lcd.obj"
 "./pins.obj"
 "./printf.obj"
 "./timer.obj"

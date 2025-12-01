@@ -23,5 +23,6 @@ void uart_print_integer_interrupt(uint32_t val);
 void uart_print_float(float value, uint8_t decimal_places);
 void float_to_str(float value, char *buf, uint8_t decimal_places);
 void uart_print_signed_integer_interrupt(int32_t val);
+uint8_t uart_getc();
 
 #endif

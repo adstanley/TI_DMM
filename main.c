@@ -12,6 +12,16 @@
 #include "hal_pmm.h"
 #include "timer.h"
 #include "uart.h"
+#include "wdt.h"
+
+// Measurement Modes
+#define DC_VOLTAGE 1
+#define AC_VOLTAGE 2
+#define DC_CURRENT 3
+#define AC_CURRENT 4
+#define POWER 5
+#define OFF 6
+volatile uint8_t measurement_mode = OFF;
 
 void uart_print_system_state(void);
 
@@ -19,9 +29,11 @@ void uart_print_system_state(void);
 // MAIN – External 32.768 kHz Crystal + 16.78 MHz MCLK/SMCLK
 // -----------------------------------------------------------------
 int main(void) {
-  __low_level_init();
+  // WDT Enable
+  WDT_Enable();
 
-  Clock_Init_16MHz();
+  // Hardware Setup
+  system_setup();
 
   // === UART Init ===
   uart_init_9600();
@@ -42,6 +54,42 @@ int main(void) {
   uart_print_interrupt("****************************************\r\n\r\n");
 
   uart_println_interrupt();
+  // Temporarily set a default mode
+    measurement_mode = OFF;
+    
+  while (1) {
+        // Non-blocking check for a received character
+        int16_t command = uart_getc();
+        
+        if (command != -1) {
+            uint8_t cmd_char = (uint8_t)command;
+            
+            // Echo the received character back
+            uart_putc(cmd_char);
+            
+            // Check for the 'V' command
+            if (cmd_char == 'V' || cmd_char == 'v') {
+                uart_print("\r\n--- Command V received. Setting mode to DC_VOLTAGE ---\r\n> ");
+                measurement_mode = DC_VOLTAGE;
+            } else if (cmd_char == 'O' || cmd_char == 'o') {
+                uart_print("\r\n--- Command O received. Setting mode to OFF ---\r\n> ");
+                measurement_mode = OFF;
+            } else {
+                uart_print("\r\n--- Command ignored ---\r\n> ");
+            }
+        }
+        
+        // This is where your measurement loop logic would go, 
+        // using the measurement_mode variable.
+        if (measurement_mode == DC_VOLTAGE) {
+            // Placeholder for DC_VOLTAGE mode operation
+            // This is where dc_voltage_measurement_mode() would be called.
+        }
+        
+        // Use a slight delay or low-power mode to avoid busy-waiting unnecessarily
+        __delay_cycles(1000); 
+    }
+    
   // uart_print_system_state();
 
   // uint32_t counter = 0;
@@ -54,7 +102,7 @@ int main(void) {
   //   //__delay_cycles(16777216); // ~1 second at 16.777216 MHz
   // }
 }
-
+/*
 // Helper to print unsigned numbers in any base (10 or 16)
 void uart_print_u32(uint32_t n, int base, int width, char pad) {
   char buf[11]; // Buffer for 32-bit int (max 10 digits + null)
@@ -261,3 +309,4 @@ void uart_print_system_state(void) {
 
   uart_printf("=== End of System State ===\r\n\r\n");
 }
+*/

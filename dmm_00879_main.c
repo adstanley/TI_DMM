@@ -92,7 +92,66 @@ uint8_t decimal_position = 4;
 uint8_t unit = 0;
 uint8_t power_mode_cal = 0;
 
-int main(void) {
+
+// DC_VOLTAGE 1, AC_VOLTAGE 2, DC_CURRENT 3, AC_CURRENT 4, POWER 5, OFF 6
+
+void handle_command(uint8_t command) {
+    uint8_t new_mode;
+
+    // Convert UART character to measurement mode
+    switch (command) {
+        case 'V':
+        case 'v':
+            uart_print_interrupt("V received.\n");
+            new_mode = DC_VOLTAGE;
+            break;
+        case 'A':
+        case 'a':
+            new_mode = AC_VOLTAGE;
+            break;
+        case 'I':
+        case 'i':
+            new_mode = DC_CURRENT; // DC Current, using 'I'
+            break;
+        case 'C':
+        case 'c':
+            new_mode = AC_CURRENT; // AC Current, using 'C'
+            break;
+        case 'P':
+        case 'p':
+            new_mode = POWER;
+            break;
+        case 'O': // Off
+        case 'o':
+            new_mode = OFF;
+            break;
+        default:
+            uart_print_interrupt("Invalid Mode Command.\n");
+            return; // Exit if command is unrecognized
+    }
+    
+    if (new_mode != measurement_mode) {
+        // 1. Disable the old ADC channel (if necessary)
+        // enable_disable_ADCs(measurement_mode); 
+
+        // 2. Update the mode
+        measurement_mode = new_mode;
+        
+        // 3. Enable the new ADC channel 
+        // enable_disable_ADCs(new_mode); 
+        
+        uart_print_interrupt("Mode set to: ");
+        switch (new_mode) { // Print confirmation
+            case DC_VOLTAGE: uart_print_interrupt("DC VOLTAGE\n"); break;
+            case AC_VOLTAGE: uart_print_interrupt("AC VOLTAGE\n"); break;
+            case DC_CURRENT: uart_print_interrupt("DC CURRENT\n"); break;
+            // ... add all other cases
+            default: break;
+        }
+    }
+}
+
+int main_manual(void) {
 
   // WDT Enable
   WDT_Enable();
@@ -138,10 +197,80 @@ int main(void) {
   }
 }
 
-void dc_voltage_measurement_mode_old() {
+int main(void) {
+  // WDT Enable
+  WDT_Enable();
+
+  // Hardware Setup
+  system_setup();
+
+  // Init UART
+  uart_init_9600();
+  //uart_init_115200();
+
+  // === Boot message ===
+  uart_print("****************************************\r\n");
+  uart_print("* TI DMM-00879 - External Crystal Test *\r\n");
+  uart_print("* 32.768 kHz XT1 → 16.78 MHz MCLK/SMCLK*\r\n");
+  uart_print("* UART 9600 baud                       *\r\n");
+  uart_print("****************************************\r\n");
+  uart_println();
+    
+  // Initial setup of coefficients and peripherals
+  dc_a_coefficient = DC_A_COEFFICIENT;
+  dc_b_coefficient = 1 - dc_a_coefficient;
+  ac_a_coefficient = AC_A_COEFFICIENT;
+  ac_b_coefficient = 1 - ac_a_coefficient;
+  KEY_IE_REG |= ALL_KEY_MASK;
+
+  // Set initial mode and enable the first ADC channel
   measurement_mode = DC_VOLTAGE;
-  uart_print_interrupt("\033[2J");  // clear screen
-  uart_print_interrupt("\033[H");   // cursor to home (row 1, col 1)
+  // You should call the enable function for the initial mode here
+  // enable_disable_ADCs(DC_VOLTAGE); 
+
+  // Enable Interrupts
+  __enable_interrupt();
+  
+  while (1) {
+      // 1. Check for UART Commands
+      uint8_t command = uart_getc(); 
+      
+      if (command != 0) {
+          handle_command(command);
+      }
+      
+      // 2. Execute the current Measurement Mode
+      switch (measurement_mode) {
+          case DC_VOLTAGE:
+              // Only run the processing for the active mode
+              dc_voltage_measurement_mode();
+              break;
+          case AC_VOLTAGE:
+              ac_voltage_measurement_mode();
+              break;
+          case DC_CURRENT:
+              dc_current_measurement_mode();
+              break;
+          case AC_CURRENT:
+              ac_current_measurement_mode();
+              break;
+          case POWER:
+              power_measurement_mode();
+              break;
+          case OFF:
+          default:
+              off();
+              break;
+      }
+      
+      __delay_cycles(1000); 
+  }
+}
+
+void dc_voltage_measurement_mode() {
+  measurement_mode = DC_VOLTAGE;
+  // uart_print_interrupt("\033[2J");  // clear screen
+  // uart_print_interrupt("\033[H");   // cursor to home (row 1, col 1)
   uart_print_interrupt("\r\nDC Voltage Measurement Mode\r\n");
   enable_disable_ADCs(DC_VOLTAGE);
   voltage_settings(dc_voltage_range);
@@ -164,46 +293,52 @@ void dc_voltage_measurement_mode_old() {
       }
     }
 
-    // KEY 1 - MODE
-    // SETS MEASUREMENT MODE
-    else if ((Events & KEY1_EVENT) > 0) {
-      Events &= ~KEY1_EVENT; // clear Event bit
-      // update_display();
-      return;
-    }
+    // Check for a pending character from UART
+    int16_t command = uart_getc();
+
+  // Inside handle_command:
+  if (new_mode != measurement_mode) {
+      // 1. Disable the old ADC channel 
+      // enable_disable_ADCs(measurement_mode); 
+
+      // 2. Update the mode
+      measurement_mode = new_mode;
+
+      // 3. Configure the hardware for the new mode!
+      if (new_mode == DC_VOLTAGE) {
+          setup_dc_voltage_mode();
+      } else if (new_mode == AC_VOLTAGE) {
+          setup_ac_voltage_mode();
+      } // ... and so on for all modes
+  }
     
     // KEY2 - RANGE
     // SETS RANGE OF EACH MEASUREMENT MODE
-    else if ((Events & KEY2_EVENT) > 0) {
-      Events &= ~KEY2_EVENT;
+    // else if ((Events & KEY2_EVENT) > 0) {
+    //   Events &= ~KEY2_EVENT;
 
-      switch (dc_voltage_range) {
-      case V_60mV:
-        dc_voltage_range = V_600mV;
-        break;
-      case V_600mV:
-        dc_voltage_range = V_6V;
-        break;
-      case V_6V:
-        dc_voltage_range = V_60V;
-        break;
-      case V_60V:
-        dc_voltage_range = V_60mV;
-        break;
-      default:
-        break;
-      }
+    //   switch (dc_voltage_range) {
+    //   case V_60mV:
+    //     dc_voltage_range = V_600mV;
+    //     break;
+    //   case V_600mV:
+    //     dc_voltage_range = V_6V;
+    //     break;
+    //   case V_6V:
+    //     dc_voltage_range = V_60V;
+    //     break;
+    //   case V_60V:
+    //     dc_voltage_range = V_60mV;
+    //     break;
+    //   default:
+    //     break;
+    //   }
 
-      voltage_settings(dc_voltage_range);
-      // update_display();
-    } else {
-      if (key_debounce == 0)
-        KEY_IE_REG |= ALL_KEY_MASK;
-    }
+    voltage_settings(dc_voltage_range);
   }
 }
 
-void dc_voltage_measurement_mode__(void) {
+void dc_voltage_measurement_mode_old(void) {
     measurement_mode = DC_VOLTAGE;
 
     uart_print_interrupt("\033[2J\033[H");                     // clear + home in one shot
@@ -241,14 +376,18 @@ void dc_voltage_measurement_mode__(void) {
             }
         }
 
-        /* --------------------------------------------------------------
-           2) KEY1 → change measurement mode (exit this function)
-           -------------------------------------------------------------- */
-        if (Events & KEY1_EVENT)
+
+        // Check for a pending character from UART
+        int16_t command = uart_getc();
+
+        // Check if the received character is 'N' (or 'n')
+        if (command == 'N' || command == 'n')
         {
-            Events &= ~KEY1_EVENT;
-            uart_print_interrupt("\r\n--- Leaving DC Voltage ---\r\n");
-            return;                         // go to next mode in main()
+            // The previous KEY1 code logic is now executed:
+            uart_print_interrupt("\r\n--- Leaving DC Voltage (UART Command) ---\r\n");
+            // No need to clear KEY1_EVENT since we are using the UART.
+            
+            return; // This exits the current mode function, causing main() to cycle to the next mode.
         }
 
         /* --------------------------------------------------------------
@@ -286,10 +425,10 @@ void dc_voltage_measurement_mode__(void) {
         /* --------------------------------------------------------------
            4) Re-enable key interrupts once debounce is finished
            -------------------------------------------------------------- */
-        if (key_debounce == 0)
-        {
-            KEY_IE_REG |= ALL_KEY_MASK;     // P2.6 & P2.7 interrupts on again
-        }
+        // if (key_debounce == 0)
+        // {
+        //     KEY_IE_REG |= ALL_KEY_MASK;     // P2.6 & P2.7 interrupts on again
+        // }
 
         /* --------------------------------------------------------------
            5) Optional: tiny yield so UART TX buffer can empty
@@ -528,8 +667,7 @@ void dc_voltage_measurement_mode_(void) {
     }
 }
 
-void dc_voltage_measurement_mode(void)
-{
+void dc_voltage_measurement_mode_testing(void) {
     measurement_mode = DC_VOLTAGE;
     /* ========== FORCE CLEAN START IN 6V RANGE ========== */
     enable_disable_ADCs(DC_VOLTAGE);
